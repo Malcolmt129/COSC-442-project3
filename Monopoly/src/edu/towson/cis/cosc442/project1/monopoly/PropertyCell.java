@@ -6,7 +6,6 @@ public class PropertyCell extends Cell {
 	private int numHouses;
 	private int rent;
 	private int sellPrice;
-	private boolean available = true;
 
 	public String getColorGroup() {
 		return colorGroup;
@@ -26,7 +25,7 @@ public class PropertyCell extends Cell {
 
 	public int getRent() {
 		int rentToCharge = rent;
-		String [] monopolies = theOwner.getMonopolies();
+		String [] monopolies = owner.getMonopolies();
 		for(int i = 0; i < monopolies.length; i++) {
 			if(monopolies[i].equals(colorGroup)) {
 				rentToCharge = rent * 2;
@@ -42,8 +41,8 @@ public class PropertyCell extends Cell {
 		Player currentPlayer = null;
 		if(!isAvailable()) {
 			currentPlayer = GameMaster.instance().getCurrentPlayer();
-			if(theOwner != currentPlayer) {
-				currentPlayer.payRentTo(theOwner, getRent());
+			if(owner != currentPlayer) {
+				currentPlayer.payRentTo(owner, getRent());
 			}
 		}
 	}
