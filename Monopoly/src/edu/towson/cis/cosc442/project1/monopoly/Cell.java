@@ -1,6 +1,7 @@
 package edu.towson.cis.cosc442.project1.monopoly;
 
 public abstract class Cell {
+	private boolean available = true;
 	private String name;
 	protected Player theOwner;
 
