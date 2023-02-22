@@ -8,7 +8,8 @@ public class CardCell extends Cell {
         this.type = type;
     }
     
-    public void playAction() {
+    public boolean playAction(String msg) {
+    	return true;
     }
     
     public int getType() {

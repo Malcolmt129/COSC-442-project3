@@ -26,7 +26,8 @@ public abstract class Cell implements IOwnable {
 	}
 	
 	@Override
-	public abstract void playAction();
+	public abstract boolean playAction(String msg) {
+	}
 
 	@Override
 	public void setAvailable(boolean available) {
