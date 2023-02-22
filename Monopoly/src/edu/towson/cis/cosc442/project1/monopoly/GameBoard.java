@@ -28,8 +28,9 @@ public class GameBoard {
 	}
 	
 	public void addCell(PropertyCell cell) {
-		int propertyNumber = getPropertyNumberForColor(cell.getColorGroup());
-		colorGroups.put(cell.getColorGroup(), new Integer(propertyNumber + 1));
+		String colorGroup = cell.getColorGroup();
+		int propertyNumber = getPropertyNumberForColor(colorGroup);
+		colorGroups.put(colorGroup, new Integer(propertyNumber + 1));
         cells.add(cell);
 	}
 
@@ -60,7 +61,7 @@ public class GameBoard {
 			new PropertyCell[getPropertyNumberForColor(color)];
 		int counter = 0;
 		for (int i = 0; i < getCellNumber(); i++) {
-			Cell c = getCell(i);
+			IOwnable c = getCell(i);
 			if(c instanceof PropertyCell) {
 				PropertyCell pc = (PropertyCell)c;
 				if(pc.getColorGroup().equals(color)) {
@@ -92,7 +93,7 @@ public class GameBoard {
 	
 	public int queryCellIndex(String string){
 		for(int i = 0; i < cells.size(); i++){
-			Cell temp = (Cell)cells.get(i); 
+			IOwnable temp = (IOwnable)cells.get(i); 
 			if(temp.getName().equals(string)) {
 				return i;
 			}
