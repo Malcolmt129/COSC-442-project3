@@ -20,13 +20,27 @@ public class Rectangle {
 		this.p2 = p2;
 	}
 	
+	/*
+	 * Get the length of the triangle given the points
+	 */
+	public double getLength() {
+		return Math.abs(this.p1.y - this.p2.y);
+	}
+	
+	/*
+	 * Get the length of the triangle given the points
+	 */
+	public double getWidth() {
+		return Math.abs(this.p1.x - this.p2.x);
+	}
+	
 	/**
 	 * Gets the area.
 	 *
 	 * @return the area
 	 */
 	public Double getArea() {
-		return Math.abs((p2.x - p1.x) * (p2.y - p1.y));
+		return this.getLength() * this.getWidth();
 	}
 	
 	/**
@@ -35,6 +49,6 @@ public class Rectangle {
 	 * @return the diagonal
 	 */
 	public Double getDiagonal() {
-		return Math.sqrt(Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2));
+		return Math.sqrt(Math.pow(this.getWidth(), 2) + Math.pow(this.getLength(), 2));
 	}
 }

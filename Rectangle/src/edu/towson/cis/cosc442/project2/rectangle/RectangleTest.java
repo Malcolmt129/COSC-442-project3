@@ -25,6 +25,24 @@ public class RectangleTest {
 		rect2 = new Rectangle(new Point(2.0, 6.0), new Point(4.0, 3.0));
 	}
 
+	
+	 /*
+	  * Test for the getLength() method of the {@link Rectangle} class.
+	  */
+	@Test
+	public void testGetLength() {
+		assertEquals(5.0, rect1.getLength(),0.001);
+	}
+	
+	
+	 /*
+	  * Test for the getLength() method of the {@link Rectangle} class.
+	  */
+	@Test
+	public void testGetWidth() {
+		assertEquals(2.0, rect1.getWidth(),0.001);
+	}
+	
 	/**
 	 * Test for the getArea() method of the {@link Rectangle} class.
 	 */
