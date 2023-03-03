@@ -184,10 +184,11 @@ public class VendingMachine {
 	 * Returns the amount of change in the machine and sets the balance to 0.
 	 * Precondition: balance >= 0
 	 * Postcondition: balance = 0
+	 * @param code The code for the item from the vending machine
 	 * @return The amount of change in the machine
 	 */
-	public double returnChange() {
-		double change = this.balance;
+	public double returnChange(String code) {
+		double change = this.balance - this.getItem(code).getPrice() ;
 		this.balance = 0;
 		return change;
 	}
