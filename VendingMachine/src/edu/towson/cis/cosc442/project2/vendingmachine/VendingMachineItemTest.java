@@ -26,6 +26,16 @@ public class VendingMachineItemTest {
 		vmi = null;
 	}
 	
+	/*
+	 * Testing the constructor. Should be equal to the 
+	 * parameters in set up.
+	 */
+	@Test
+	public void testVendingMachineItem() {
+		assertEquals("Doritos",vmi.getName());
+		assertEquals(2.50,vmi.getPrice(), 0.001);
+	}
+	
 	
 	/*
 	 * Testing the getName() method.
