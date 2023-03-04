@@ -25,16 +25,22 @@ public class VendingMachineItemTest {
 	public void tearDown() throws Exception {
 		vmi = null;
 	}
-
+	
+	
+	/*
+	 * Testing the getName() method.
+	 */
 	@Test
-	public void getName() {
+	public void testGetName() {
 		assertEquals("Doritos",vmi.getName());
 	}
 	
 	
-	
+	/*
+	 * Testing the getPrice() method.
+	 */
 	@Test
-	public void getPrice() {
+	public void testGetPrice() {
 		assertEquals(2.50,vmi.getPrice(),0.001);
 	}
 
