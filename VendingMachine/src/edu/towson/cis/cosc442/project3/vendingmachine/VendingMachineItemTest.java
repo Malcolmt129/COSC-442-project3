@@ -1,4 +1,4 @@
-package edu.towson.cis.cosc442.project2.vendingmachine;
+package edu.towson.cis.cosc442.project3.vendingmachine;
 
 import static org.junit.Assert.*;
 
@@ -14,6 +14,7 @@ public class VendingMachineItemTest {
 	 */
 	
 	VendingMachineItem vmi;
+	VendingMachineItem vmi2;
 	
 	
 	@Before
@@ -24,6 +25,7 @@ public class VendingMachineItemTest {
 	@After
 	public void tearDown() throws Exception {
 		vmi = null;
+		vmi2 = null;
 	}
 	
 	/*
@@ -36,6 +38,13 @@ public class VendingMachineItemTest {
 		assertEquals(2.50,vmi.getPrice(), 0.001);
 	}
 	
+	/*
+	 * Testing the VendingMachine exception
+	 */
+	@Test(expected= VendingMachineException.class)
+	public void testVendingMachineItemEx() {
+		vmi2 = new VendingMachineItem("Water", -2.00);
+	}
 	
 	/*
 	 * Testing the getName() method.

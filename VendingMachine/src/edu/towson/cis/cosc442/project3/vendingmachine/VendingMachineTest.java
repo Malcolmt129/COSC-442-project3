@@ -1,4 +1,4 @@
-package edu.towson.cis.cosc442.project2.vendingmachine;
+ package edu.towson.cis.cosc442.project3.vendingmachine;
 
 import static org.junit.Assert.*;
 
@@ -34,6 +34,15 @@ public class VendingMachineTest {
 		assertEquals("Sour Patch Kids: Watermelon", vm.getItem("A").getName() );
 	}
 	
+	/*
+	 * Testing to get 100% on the getSlotIndex method by inducing
+	 * the error.
+	 */
+	@Test(expected= VendingMachineException.class)
+	public void testAddItemF() {
+		vm.addItem(new VendingMachineItem("Sour Patch Kids: Watermelon", 2.00), "F" );
+	}
+	
 	
 	/*
 	 * Testing to see if the exception is passed when you put two items in
@@ -41,12 +50,10 @@ public class VendingMachineTest {
 	 */
 	@Test(expected= VendingMachineException.class)
 	public void testAddItemException() {
-		vm.addItem(new VendingMachineItem("Sour Patch Kids: Watermelon", 2.00), "A" );
-		vm.addItem(new VendingMachineItem("Chesters", 2.00), "A" );
+		vm.addItem(new VendingMachineItem("Sour Patch Kids: Watermelon", 2.00), "C" );
+		vm.addItem(new VendingMachineItem("Chesters", 2.00), "C" );
 		
-	}
-	
-	
+	}	
 	
 	/*
 	 * Testing getItem() method.
@@ -75,9 +82,9 @@ public class VendingMachineTest {
 	 */
 	@Test(expected= VendingMachineException.class)
 	public void testRemoveItem() {
-		vm.addItem(new VendingMachineItem("Chesters", 2.00), "B" );
-		vm.removeItem("B");
-		assertEquals(null,vm.getItem("B"));
+		vm.addItem(new VendingMachineItem("Chesters", 2.00), "D" );
+		vm.removeItem("D");
+		assertEquals(null,vm.getItem("D"));
 	}
 	
 	/*
@@ -130,6 +137,31 @@ public class VendingMachineTest {
 		assertEquals(true,vm.makePurchase("A"));
 	}
 	
+	
+	/*
+	 * Trying to get 100% for makePurchase() method. Testing
+	 * if you dont have enough money.
+	 */
+	
+	@Test
+	public void testMakePurchse1() {
+		vm.addItem(new VendingMachineItem("Chips",200.00), "A");
+		vm.insertMoney(2.00);
+		assertEquals(false, vm.makePurchase("A"));
+	}
+	
+	/*
+	 * Trying to get 100% for makePurchase() method. Testing
+	 * if the item is null. This part of the code can't be reached
+	 * so it is good to go...
+	 */
+	
+	@Test(expected = VendingMachineException.class)
+	public void testMakePurchse2() {
+		vm.insertMoney(2.00);
+		assertEquals(false, vm.makePurchase("A"));
+	}
+	
 	/*
 	 * Testing the makePurchase() method's item empty.
 	 * Should return an exception. Also the boolean
@@ -144,10 +176,10 @@ public class VendingMachineTest {
 	
 	@Test
 	public void testReturnChange() {
-		vm.addItem(new VendingMachineItem("Chester's", 2.00), "A");
+		vm.addItem(new VendingMachineItem("Chester's", 2.00), "D");
 		vm.insertMoney(3.00);
 		
-		assertEquals(1.00, vm.returnChange("A"), 0.001);
+		assertEquals(1.00, vm.returnChange("D"), 0.001);
 		
 	}
 
