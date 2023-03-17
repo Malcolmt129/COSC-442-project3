@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>VendingMachineTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">VendingMachine GPT (Mar 17, 2023 6:14:44 PM)</a> &gt; <a href="../../index.html" class="el_group">VendingMachine GPT</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">edu.towson.cis.cosc442.project3.vendingmachine</a> &gt; <span class="el_source">VendingMachineTest.java</span></div><h1>VendingMachineTest.java</h1><pre class="source lang-java linenums">package edu.towson.cis.cosc442.project3.vendingmachine;
+
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+<span class="fc" id="L8">public class VendingMachineTest {</span>
+
+    private VendingMachine vendingMachine;
+    private VendingMachineItem item1;
+    private VendingMachineItem item2;
+    private VendingMachineItem item3;
+    private VendingMachineItem item4;
+    private VendingMachineItem invalidItem;
+    
+    @Before
+    public void setUp() throws VendingMachineException {
+<span class="fc" id="L19">        vendingMachine = new VendingMachine();</span>
+<span class="fc" id="L20">        item1 = new VendingMachineItem(&quot;Candy&quot;, 1.50);</span>
+<span class="fc" id="L21">        item2 = new VendingMachineItem(&quot;Chips&quot;, 1.75);</span>
+<span class="fc" id="L22">        item3 = new VendingMachineItem(&quot;Soda&quot;, 2.25);</span>
+<span class="fc" id="L23">        item4 = new VendingMachineItem(&quot;Gum&quot;, 0.75);</span>
+<span class="fc" id="L24">    }</span>
+
+    @Test
+    public void testAddItem() throws VendingMachineException {
+<span class="fc" id="L28">        vendingMachine.addItem(item1, &quot;A&quot;);</span>
+<span class="fc" id="L29">        vendingMachine.addItem(item2, &quot;B&quot;);</span>
+<span class="fc" id="L30">        vendingMachine.addItem(item3, &quot;C&quot;);</span>
+<span class="fc" id="L31">        vendingMachine.addItem(item4, &quot;D&quot;);</span>
+<span class="fc" id="L32">        assertEquals(item1, vendingMachine.getItem(&quot;A&quot;));</span>
+<span class="fc" id="L33">        assertEquals(item2, vendingMachine.getItem(&quot;B&quot;));</span>
+<span class="fc" id="L34">        assertEquals(item3, vendingMachine.getItem(&quot;C&quot;));</span>
+<span class="fc" id="L35">        assertEquals(item4, vendingMachine.getItem(&quot;D&quot;));</span>
+<span class="fc" id="L36">    }</span>
+    
+    @Test(expected = VendingMachineException.class)
+    public void testAddItemToOccupiedSlot() throws VendingMachineException {
+<span class="fc" id="L40">        vendingMachine.addItem(item1, &quot;A&quot;);</span>
+<span class="nc" id="L41">        vendingMachine.addItem(item2, &quot;A&quot;);</span>
+<span class="nc" id="L42">    }</span>
+    
+    @Test(expected = VendingMachineException.class)
+    public void testAddItemWithInvalidCode() throws VendingMachineException {
+<span class="nc" id="L46">        vendingMachine.addItem(item1, &quot;E&quot;);</span>
+<span class="nc" id="L47">    }</span>
+    
+    @Test(expected = VendingMachineException.class)
+    public void testAddItemWithInvalidPrice() throws VendingMachineException {
+<span class="nc" id="L51">    	invalidItem = new VendingMachineItem(&quot;Invalid Item&quot;, -1.0);</span>
+<span class="nc" id="L52">    	vendingMachine.addItem(invalidItem, &quot;A&quot;);</span>
+<span class="nc" id="L53">    }</span>
+    
+    @Test
+    public void testRemoveItem() throws VendingMachineException {
+<span class="fc" id="L57">        vendingMachine.addItem(item1, &quot;A&quot;);</span>
+<span class="fc" id="L58">        VendingMachineItem removedItem = vendingMachine.removeItem(&quot;A&quot;);</span>
+<span class="fc" id="L59">        assertEquals(item1, removedItem);</span>
+<span class="fc" id="L60">        assertNull(vendingMachine.getItem(&quot;A&quot;));</span>
+<span class="fc" id="L61">    }</span>
+    
+    @Test(expected = VendingMachineException.class)
+    public void testRemoveItemFromEmptySlot() throws VendingMachineException {
+<span class="nc" id="L65">        vendingMachine.removeItem(&quot;A&quot;);</span>
+<span class="nc" id="L66">    }</span>
+    
+    @Test(expected = VendingMachineException.class)
+    public void testRemoveItemWithInvalidCode() throws VendingMachineException {
+<span class="nc" id="L70">        vendingMachine.removeItem(&quot;E&quot;);</span>
+<span class="nc" id="L71">    }</span>
+    
+    @Test
+    public void testGetBalance() {
+<span class="fc" id="L75">        assertEquals(0.0, vendingMachine.getBalance(), 0.001);</span>
+<span class="fc" id="L76">    }</span>
+    
+    @Test
+    public void testInsertMoney() {
+<span class="fc" id="L80">        vendingMachine.insertMoney(1.0);</span>
+<span class="fc" id="L81">        vendingMachine.insertMoney(0.5);</span>
+<span class="fc" id="L82">        assertEquals(1.5, vendingMachine.getBalance(), 0.001);</span>
+<span class="fc" id="L83">    }</span>
+    
+    @Test (expected = VendingMachineException.class)
+    public void testInsertMoney2() throws VendingMachineException {
+<span class="nc" id="L87">        vendingMachine.insertMoney(-1.0); </span>
+<span class="nc" id="L88">    }</span>
+    
+
+    @Test
+    public void testMakePurchase() throws VendingMachineException {
+        
+<span class="fc" id="L94">        vendingMachine.addItem(item1, &quot;A&quot;);</span>
+
+        // Purchase an item with exact change
+<span class="fc" id="L97">        vendingMachine.insertMoney(1.5);</span>
+<span class="fc" id="L98">        vendingMachine.makePurchase(&quot;A&quot;);</span>
+<span class="fc" id="L99">        assertNull(vendingMachine.getItem(&quot;A&quot;));</span>
+<span class="fc" id="L100">        assertEquals(0.0, vendingMachine.getBalance(), 0.001);</span>
+
+        // Purchase an item with change
+<span class="fc" id="L103">        vendingMachine.addItem(item1, &quot;A&quot;);</span>
+<span class="fc" id="L104">        vendingMachine.insertMoney(2.0);</span>
+<span class="fc" id="L105">        vendingMachine.makePurchase(&quot;A&quot;);</span>
+<span class="fc" id="L106">        assertNull(vendingMachine.getItem(&quot;A&quot;));</span>
+<span class="fc" id="L107">        assertEquals(0.5, vendingMachine.getBalance(), 0.001);</span>
+<span class="fc" id="L108">    }</span>
+
+    @Test
+    public void testReturnChange() {
+<span class="fc" id="L112">        vendingMachine.insertMoney(3.25);</span>
+<span class="fc" id="L113">        assertEquals(3.25, vendingMachine.returnChange(), 0.01);</span>
+<span class="fc" id="L114">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>VendingMachine GPT (Mar 17, 2023 6:14:44 PM)</div></body></html>
