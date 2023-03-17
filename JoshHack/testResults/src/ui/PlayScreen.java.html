@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>PlayScreen.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">ui</a> &gt; <span class="el_source">PlayScreen.java</span></div><h1>PlayScreen.java</h1><pre class="source lang-java linenums">package ui;
+
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import asciiPanel.AsciiPanel;
+import game.Creature;
+import game.EatScreen;
+import game.FieldOfView;
+import game.Item;
+import game.StuffFactory;
+import game.Tile;
+import game.World;
+import game.WorldBuilder;
+
+public class PlayScreen implements Screen {
+	private World world;
+	private Creature player;
+	private int screenWidth;
+	private int screenHeight;
+	private List&lt;String&gt; messages;
+	private FieldOfView fov;
+	private Screen subscreen;
+	
+<span class="nc" id="L27">	public PlayScreen(){</span>
+<span class="nc" id="L28">		screenWidth = 80;</span>
+<span class="nc" id="L29">		screenHeight = 23;</span>
+<span class="nc" id="L30">		messages = new ArrayList&lt;String&gt;();</span>
+<span class="nc" id="L31">		createWorld();</span>
+<span class="nc" id="L32">		fov = new FieldOfView(world);</span>
+		
+<span class="nc" id="L34">		StuffFactory factory = new StuffFactory(world);</span>
+<span class="nc" id="L35">		createCreatures(factory);</span>
+<span class="nc" id="L36">		createItems(factory);</span>
+<span class="nc" id="L37">	}</span>
+
+	private void createCreatures(StuffFactory factory){
+<span class="nc" id="L40">		player = factory.newPlayer(messages, fov);</span>
+		
+<span class="nc bnc" id="L42" title="All 2 branches missed.">		for (int z = 0; z &lt; world.depth(); z++){</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">			for (int i = 0; i &lt; 4; i++){</span>
+<span class="nc" id="L44">				factory.newFungus(z);</span>
+			}
+<span class="nc bnc" id="L46" title="All 2 branches missed.">			for (int i = 0; i &lt; 10; i++){</span>
+<span class="nc" id="L47">				factory.newBat(z);</span>
+			}
+<span class="nc bnc" id="L49" title="All 2 branches missed.">			for (int i = 0; i &lt; z * 2 + 1; i++){</span>
+<span class="nc" id="L50">				factory.newZombie(z, player);</span>
+<span class="nc" id="L51">				factory.newGoblin(z, player);</span>
+			}
+		}
+<span class="nc" id="L54">	}</span>
+
+	private void createItems(StuffFactory factory) {
+<span class="nc bnc" id="L57" title="All 2 branches missed.">		for (int z = 0; z &lt; world.depth(); z++){</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">			for (int i = 0; i &lt; world.width() * world.height() / 50; i++){</span>
+<span class="nc" id="L59">				factory.newRock(z);</span>
+			}
+
+<span class="nc" id="L62">			factory.newFruit(z);</span>
+<span class="nc" id="L63">			factory.newEdibleWeapon(z);</span>
+<span class="nc" id="L64">			factory.newBread(z);</span>
+<span class="nc" id="L65">			factory.randomArmor(z);</span>
+<span class="nc" id="L66">			factory.randomWeapon(z);</span>
+<span class="nc" id="L67">			factory.randomWeapon(z);</span>
+			
+<span class="nc bnc" id="L69" title="All 2 branches missed.">			for (int i = 0; i &lt; z + 1; i++){</span>
+<span class="nc" id="L70">				factory.randomPotion(z);</span>
+<span class="nc" id="L71">				factory.randomSpellBook(z);</span>
+			}
+		}
+<span class="nc" id="L74">		factory.newVictoryItem(world.depth() - 1);</span>
+<span class="nc" id="L75">	}</span>
+	
+	private void createWorld(){
+<span class="nc" id="L78">		world = new WorldBuilder(90, 32, 5)</span>
+<span class="nc" id="L79">					.makeCaves()</span>
+<span class="nc" id="L80">					.build();</span>
+<span class="nc" id="L81">	}</span>
+	
+<span class="nc" id="L83">	public int getScrollX() { return Math.max(0, Math.min(player.x - screenWidth / 2, world.width() - screenWidth)); }</span>
+	
+<span class="nc" id="L85">	public int getScrollY() { return Math.max(0, Math.min(player.y - screenHeight / 2, world.height() - screenHeight)); }</span>
+	
+	@Override
+	public void displayOutput(AsciiPanel terminal) {
+<span class="nc" id="L89">		int left = getScrollX();</span>
+<span class="nc" id="L90">		int top = getScrollY(); </span>
+		
+<span class="nc" id="L92">		displayTiles(terminal, left, top);</span>
+<span class="nc" id="L93">		displayMessages(terminal, messages);</span>
+		
+<span class="nc" id="L95">		String stats = String.format(&quot; %3d/%3d hp   %d/%d mana   %8s&quot;, player.hp(), player.maxHp(), player.mana(), player.maxMana(), hunger());</span>
+<span class="nc" id="L96">		terminal.write(stats, 1, 23);</span>
+		
+<span class="nc bnc" id="L98" title="All 2 branches missed.">		if (subscreen != null)</span>
+<span class="nc" id="L99">			subscreen.displayOutput(terminal);</span>
+<span class="nc" id="L100">	}</span>
+	
+	private String hunger(){
+<span class="nc bnc" id="L103" title="All 2 branches missed.">		if (player.food() &lt; player.maxFood() * 0.10)</span>
+<span class="nc" id="L104">			return &quot;Starving&quot;;</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">		else if (player.food() &lt; player.maxFood() * 0.25)</span>
+<span class="nc" id="L106">			return &quot;Hungry&quot;;</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">		else if (player.food() &gt; player.maxFood() * 0.90)</span>
+<span class="nc" id="L108">			return &quot;Stuffed&quot;;</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">		else if (player.food() &gt; player.maxFood() * 0.75)</span>
+<span class="nc" id="L110">			return &quot;Full&quot;;</span>
+		else
+<span class="nc" id="L112">			return &quot;&quot;;</span>
+	}
+
+	private void displayMessages(AsciiPanel terminal, List&lt;String&gt; messages) {
+<span class="nc" id="L116">		int top = screenHeight - messages.size();</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">		for (int i = 0; i &lt; messages.size(); i++){</span>
+<span class="nc" id="L118">			terminal.writeCenter(messages.get(i), top + i);</span>
+		}
+<span class="nc bnc" id="L120" title="All 2 branches missed.">		if (subscreen == null)</span>
+<span class="nc" id="L121">			messages.clear();</span>
+<span class="nc" id="L122">	}</span>
+
+	private void displayTiles(AsciiPanel terminal, int left, int top) {
+<span class="nc" id="L125">		fov.update(player.x, player.y, player.z, player.visionRadius());</span>
+		
+<span class="nc bnc" id="L127" title="All 2 branches missed.">		for (int x = 0; x &lt; screenWidth; x++){</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">			for (int y = 0; y &lt; screenHeight; y++){</span>
+<span class="nc" id="L129">				int wx = x + left;</span>
+<span class="nc" id="L130">				int wy = y + top;</span>
+
+<span class="nc bnc" id="L132" title="All 2 branches missed.">				if (player.canSee(wx, wy, player.z))</span>
+<span class="nc" id="L133">					terminal.write(world.glyph(wx, wy, player.z), x, y, world.color(wx, wy, player.z));</span>
+				else
+<span class="nc" id="L135">					terminal.write(fov.tile(wx, wy, player.z).glyph(), x, y, Color.darkGray);</span>
+			}
+		}
+<span class="nc" id="L138">	}</span>
+	
+	@Override
+	public Screen respondToUserInput(KeyEvent key) {
+<span class="nc" id="L142">		int level = player.level();</span>
+		
+<span class="nc bnc" id="L144" title="All 2 branches missed.">		if (subscreen != null) {</span>
+<span class="nc" id="L145">			subscreen = subscreen.respondToUserInput(key);</span>
+<span class="nc" id="L146">		} else {</span>
+<span class="nc bnc" id="L147" title="All 18 branches missed.">			switch (key.getKeyCode()){</span>
+			case KeyEvent.VK_LEFT:
+<span class="nc" id="L149">			case KeyEvent.VK_H: player.moveBy(-1, 0, 0); break;</span>
+			case KeyEvent.VK_RIGHT:
+<span class="nc" id="L151">			case KeyEvent.VK_L: player.moveBy( 1, 0, 0); break;</span>
+			case KeyEvent.VK_UP:
+<span class="nc" id="L153">			case KeyEvent.VK_K: player.moveBy( 0,-1, 0); break;</span>
+			case KeyEvent.VK_DOWN:
+<span class="nc" id="L155">			case KeyEvent.VK_J: player.moveBy( 0, 1, 0); break;</span>
+<span class="nc" id="L156">			case KeyEvent.VK_Y: player.moveBy(-1,-1, 0); break;</span>
+<span class="nc" id="L157">			case KeyEvent.VK_U: player.moveBy( 1,-1, 0); break;</span>
+<span class="nc" id="L158">			case KeyEvent.VK_B: player.moveBy(-1, 1, 0); break;</span>
+<span class="nc" id="L159">			case KeyEvent.VK_N: player.moveBy( 1, 1, 0); break;</span>
+<span class="nc" id="L160">			case KeyEvent.VK_D: subscreen = new DropScreen(player); break;</span>
+<span class="nc" id="L161">			case KeyEvent.VK_E: subscreen = new EatScreen(player); break;</span>
+<span class="nc" id="L162">			case KeyEvent.VK_W: subscreen = new EquipScreen(player); break;</span>
+<span class="nc" id="L163">			case KeyEvent.VK_X: subscreen = new ExamineScreen(player); break;</span>
+<span class="nc" id="L164">			case KeyEvent.VK_SEMICOLON: subscreen = new LookScreen(player, &quot;Looking&quot;, </span>
+<span class="nc" id="L165">					player.x - getScrollX(), </span>
+<span class="nc" id="L166">					player.y - getScrollY()); break;</span>
+<span class="nc" id="L167">			case KeyEvent.VK_T: subscreen = new ThrowScreen(player,</span>
+<span class="nc" id="L168">					player.x - getScrollX(), </span>
+<span class="nc" id="L169">					player.y - getScrollY()); break;</span>
+			case KeyEvent.VK_F: 
+<span class="nc bnc" id="L171" title="All 4 branches missed.">				if (player.weapon() == null || player.weapon().rangedAttackValue() == 0)</span>
+<span class="nc" id="L172">					player.notify(&quot;You don't have a ranged weapon equiped.&quot;);</span>
+				else
+<span class="nc" id="L174">					subscreen = new FireWeaponScreen(player,</span>
+<span class="nc" id="L175">						player.x - getScrollX(), </span>
+<span class="nc" id="L176">						player.y - getScrollY()); break;</span>
+<span class="nc" id="L177">			case KeyEvent.VK_Q: subscreen = new QuaffScreen(player); break;</span>
+<span class="nc" id="L178">			case KeyEvent.VK_R: subscreen = new ReadScreen(player,</span>
+<span class="nc" id="L179">						player.x - getScrollX(), </span>
+<span class="nc" id="L180">						player.y - getScrollY()); break;</span>
+			}
+			
+<span class="nc bnc" id="L183" title="All 5 branches missed.">			switch (key.getKeyChar()){</span>
+			case 'g':
+<span class="nc" id="L185">			case ',': player.pickup(); break;</span>
+			case '&lt;': 
+<span class="nc bnc" id="L187" title="All 2 branches missed.">				if (userIsTryingToExit())</span>
+<span class="nc" id="L188">					return userExits();</span>
+				else
+<span class="nc" id="L190">					player.moveBy( 0, 0, -1); break;</span>
+<span class="nc" id="L191">			case '&gt;': player.moveBy( 0, 0, 1); break;</span>
+<span class="nc" id="L192">			case '?': subscreen = new HelpScreen(); break;</span>
+			}
+		}
+
+<span class="nc bnc" id="L196" title="All 2 branches missed.">		if (player.level() &gt; level)</span>
+<span class="nc" id="L197">			subscreen = new LevelUpScreen(player, player.level() - level);</span>
+		
+<span class="nc bnc" id="L199" title="All 2 branches missed.">		if (subscreen == null)</span>
+<span class="nc" id="L200">			world.update();</span>
+		
+<span class="nc bnc" id="L202" title="All 2 branches missed.">		if (player.hp() &lt; 1)</span>
+<span class="nc" id="L203">			return new LoseScreen(player);</span>
+		
+<span class="nc" id="L205">		return this;</span>
+	}
+
+	private boolean userIsTryingToExit(){
+<span class="nc bnc" id="L209" title="All 4 branches missed.">		return player.z == 0 &amp;&amp; world.tile(player.x, player.y, player.z) == Tile.STAIRS_UP;</span>
+	}
+	
+	private Screen userExits(){
+<span class="nc bnc" id="L213" title="All 2 branches missed.">		for (Item item : player.inventory().getItems()){</span>
+<span class="nc bnc" id="L214" title="All 4 branches missed.">			if (item != null &amp;&amp; item.name().equals(&quot;teddy bear&quot;))</span>
+<span class="nc" id="L215">				return new WinScreen();</span>
+		}
+<span class="nc" id="L217">		player.modifyHp(0, &quot;Died while cowardly fleeing the caves.&quot;);</span>
+<span class="nc" id="L218">		return new LoseScreen(player);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

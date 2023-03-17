@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Point.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">Point.java</span></div><h1>Point.java</h1><pre class="source lang-java linenums">package game;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Point {
+	public int x;
+	public int y;
+	public int z;
+	
+<span class="fc" id="L12">	public Point(int x, int y, int z){</span>
+<span class="fc" id="L13">		this.x = x;</span>
+<span class="fc" id="L14">		this.y = y;</span>
+<span class="fc" id="L15">		this.z = z;</span>
+<span class="fc" id="L16">	}</span>
+	
+	@Override
+	public int hashCode() {
+<span class="nc" id="L20">		final int prime = 31;</span>
+<span class="nc" id="L21">		int result = 1;</span>
+<span class="nc" id="L22">		result = prime * result + x;</span>
+<span class="nc" id="L23">		result = prime * result + y;</span>
+<span class="nc" id="L24">		result = prime * result + z;</span>
+<span class="nc" id="L25">		return result;</span>
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+<span class="nc bnc" id="L30" title="All 2 branches missed.">		if (this == obj)</span>
+<span class="nc" id="L31">			return true;</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">		if (obj == null)</span>
+<span class="nc" id="L33">			return false;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">		if (!(obj instanceof Point))</span>
+<span class="nc" id="L35">			return false;</span>
+<span class="nc" id="L36">		Point other = (Point) obj;</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">		if (x != other.x)</span>
+<span class="nc" id="L38">			return false;</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">		if (y != other.y)</span>
+<span class="nc" id="L40">			return false;</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">		if (z != other.z)</span>
+<span class="nc" id="L42">			return false;</span>
+<span class="nc" id="L43">		return true;</span>
+	}
+
+	public List&lt;Point&gt; neighbors8(){
+<span class="fc" id="L47">		List&lt;Point&gt; points = new ArrayList&lt;Point&gt;();</span>
+		
+<span class="fc bfc" id="L49" title="All 2 branches covered.">		for (int ox = -1; ox &lt; 2; ox++){</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">			for (int oy = -1; oy &lt; 2; oy++){</span>
+<span class="fc bfc" id="L51" title="All 4 branches covered.">				if (ox == 0 &amp;&amp; oy == 0)</span>
+<span class="fc" id="L52">					continue;</span>
+				
+<span class="fc" id="L54">				points.add(new Point(x+ox, y+oy, z));</span>
+			}
+		}
+
+<span class="fc" id="L58">		Collections.shuffle(points);</span>
+<span class="fc" id="L59">		return points;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

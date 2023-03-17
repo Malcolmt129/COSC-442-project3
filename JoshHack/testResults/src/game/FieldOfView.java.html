@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>FieldOfView.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">FieldOfView.java</span></div><h1>FieldOfView.java</h1><pre class="source lang-java linenums">package game;
+
+public class FieldOfView {
+	private World world;
+	private int depth;
+	
+	private boolean[][] visible;
+	public boolean isVisible(int x, int y, int z){
+<span class="nc bnc" id="L9" title="All 12 branches missed.">		return z == depth &amp;&amp; x &gt;= 0 &amp;&amp; y &gt;= 0 &amp;&amp; x &lt; visible.length &amp;&amp; y &lt; visible[0].length &amp;&amp; visible[x][y];</span>
+	}
+	
+	private Tile[][][] tiles;
+	public Tile tile(int x, int y, int z){
+<span class="nc" id="L14">		return tiles[x][y][z];</span>
+	}
+	
+<span class="nc" id="L17">	public FieldOfView(World world){</span>
+<span class="nc" id="L18">		this.world = world;</span>
+<span class="nc" id="L19">		this.visible = new boolean[world.width()][world.height()];</span>
+<span class="nc" id="L20">		this.tiles = new Tile[world.width()][world.height()][world.depth()];</span>
+		
+<span class="nc bnc" id="L22" title="All 2 branches missed.">		for (int x = 0; x &lt; world.width(); x++){</span>
+<span class="nc bnc" id="L23" title="All 2 branches missed.">			for (int y = 0; y &lt; world.height(); y++){</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">				for (int z = 0; z &lt; world.depth(); z++){</span>
+<span class="nc" id="L25">					tiles[x][y][z] = Tile.UNKNOWN;</span>
+				}
+			}
+		}
+<span class="nc" id="L29">	}</span>
+	
+	public void update(int wx, int wy, int wz, int r){
+<span class="nc" id="L32">		depth = wz;</span>
+<span class="nc" id="L33">		visible = new boolean[world.width()][world.height()];</span>
+		
+<span class="nc bnc" id="L35" title="All 2 branches missed.">		for (int x = -r; x &lt; r; x++){</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">			for (int y = -r; y &lt; r; y++){</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">				if (x*x + y*y &gt; r*r)</span>
+<span class="nc" id="L38">					continue;</span>
+				
+<span class="nc bnc" id="L40" title="All 8 branches missed.">				if (wx + x &lt; 0 || wx + x &gt;= world.width() || wy + y &lt; 0 || wy + y &gt;= world.height())</span>
+<span class="nc" id="L41">					continue;</span>
+				
+<span class="nc bnc" id="L43" title="All 2 branches missed.">				for (Point p : new Line(wx, wy, wx + x, wy + y)){</span>
+<span class="nc" id="L44">					Tile tile = world.tile(p.x, p.y, wz);</span>
+<span class="nc" id="L45">					visible[p.x][p.y] = true;</span>
+<span class="nc" id="L46">					tiles[p.x][p.y][wz] = tile; </span>
+					
+<span class="nc bnc" id="L48" title="All 2 branches missed.">					if (!tile.isGround())</span>
+<span class="nc" id="L49">						break;</span>
+				}
+			}
+		}
+<span class="nc" id="L53">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

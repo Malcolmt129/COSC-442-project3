@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Effect.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">Effect.java</span></div><h1>Effect.java</h1><pre class="source lang-java linenums">package game;
+
+public class Effect {
+	protected int duration;
+	
+<span class="nc bnc" id="L6" title="All 2 branches missed.">	public boolean isDone() { return duration &lt; 1; }</span>
+
+<span class="nc" id="L8">	public Effect(int duration){</span>
+<span class="nc" id="L9">		this.duration = duration;</span>
+<span class="nc" id="L10">	}</span>
+	
+<span class="nc" id="L12">	public Effect(Effect other){</span>
+<span class="nc" id="L13">		this.duration = other.duration; </span>
+<span class="nc" id="L14">	}</span>
+	
+	public void update(Creature creature){
+<span class="nc" id="L17">		duration--;</span>
+<span class="nc" id="L18">	}</span>
+	
+	public void start(Creature creature){
+		
+<span class="nc" id="L22">	}</span>
+	
+	public void end(Creature creature){
+		
+<span class="nc" id="L26">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

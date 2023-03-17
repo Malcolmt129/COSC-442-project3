@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>AppletMain.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">AppletMain.java</span></div><h1>AppletMain.java</h1><pre class="source lang-java linenums">package game;
+
+import java.applet.Applet;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+import asciiPanel.AsciiPanel;
+import ui.Screen;
+import ui.StartScreen;
+
+public class AppletMain extends Applet implements KeyListener {
+	private static final long serialVersionUID = 2560255315130084198L;
+	
+	private AsciiPanel terminal;
+	private Screen screen;
+	
+	public AppletMain(){
+<span class="nc" id="L18">		super();</span>
+<span class="nc" id="L19">		terminal = new AsciiPanel();</span>
+<span class="nc" id="L20">		add(terminal);</span>
+<span class="nc" id="L21">		screen = new StartScreen();</span>
+<span class="nc" id="L22">		addKeyListener(this);</span>
+<span class="nc" id="L23">		repaint();</span>
+<span class="nc" id="L24">	}</span>
+	
+	@Override
+	public void init(){
+<span class="nc" id="L28">		super.init();</span>
+<span class="nc" id="L29">		this.setSize(terminal.getWidth() + 20, terminal.getHeight() + 20);</span>
+<span class="nc" id="L30">	}</span>
+
+	@Override
+	public void repaint(){
+<span class="nc" id="L34">		terminal.clear();</span>
+<span class="nc" id="L35">		screen.displayOutput(terminal);</span>
+<span class="nc" id="L36">		super.repaint();</span>
+<span class="nc" id="L37">	}</span>
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+<span class="nc" id="L41">		screen = screen.respondToUserInput(e);</span>
+<span class="nc" id="L42">		repaint();</span>
+<span class="nc" id="L43">	}</span>
+
+	@Override
+<span class="nc" id="L46">	public void keyReleased(KeyEvent e) { }</span>
+
+	@Override
+<span class="nc" id="L49">	public void keyTyped(KeyEvent e) { }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

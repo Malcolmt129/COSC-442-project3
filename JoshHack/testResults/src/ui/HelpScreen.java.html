@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>HelpScreen.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">ui</a> &gt; <span class="el_source">HelpScreen.java</span></div><h1>HelpScreen.java</h1><pre class="source lang-java linenums">package ui;
+
+import java.awt.event.KeyEvent;
+import asciiPanel.AsciiPanel;
+
+<span class="nc" id="L6">public class HelpScreen implements Screen {</span>
+
+	@Override
+	public void displayOutput(AsciiPanel terminal) {
+<span class="nc" id="L10">		terminal.clear();</span>
+<span class="nc" id="L11">		terminal.writeCenter(&quot;roguelike help&quot;, 1);</span>
+<span class="nc" id="L12">		terminal.write(&quot;Descend the Caves Of Slight Danger, find the lost Teddy Bear, and return to&quot;, 1, 3);</span>
+<span class="nc" id="L13">		terminal.write(&quot;the surface to win. Use what you find to avoid dying.&quot;, 1, 4);</span>
+		
+<span class="nc" id="L15">		int y = 6;</span>
+<span class="nc" id="L16">		terminal.write(&quot;[g] or [,] to pick up&quot;, 2, y++);</span>
+<span class="nc" id="L17">		terminal.write(&quot;[d] to drop&quot;, 2, y++);</span>
+<span class="nc" id="L18">		terminal.write(&quot;[e] to eat&quot;, 2, y++);</span>
+<span class="nc" id="L19">		terminal.write(&quot;[w] to wear or wield&quot;, 2, y++);</span>
+<span class="nc" id="L20">		terminal.write(&quot;[?] for help&quot;, 2, y++);</span>
+<span class="nc" id="L21">		terminal.write(&quot;[x] to examine your items&quot;, 2, y++);</span>
+<span class="nc" id="L22">		terminal.write(&quot;[;] to look around&quot;, 2, y++);</span>
+<span class="nc" id="L23">		terminal.write(&quot;[t] to throw an item&quot;, 2, y++);</span>
+<span class="nc" id="L24">		terminal.write(&quot;[q] to quaff a potion&quot;, 2, y++);</span>
+<span class="nc" id="L25">		terminal.write(&quot;[r] to read something&quot;, 2, y++);</span>
+		
+<span class="nc" id="L27">		terminal.writeCenter(&quot;-- press any key to continue --&quot;, 22);</span>
+<span class="nc" id="L28">	}</span>
+
+	@Override
+	public Screen respondToUserInput(KeyEvent key) {
+<span class="nc" id="L32">		return null;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

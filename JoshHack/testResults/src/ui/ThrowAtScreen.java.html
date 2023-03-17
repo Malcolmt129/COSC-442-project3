@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>ThrowAtScreen.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">ui</a> &gt; <span class="el_source">ThrowAtScreen.java</span></div><h1>ThrowAtScreen.java</h1><pre class="source lang-java linenums">package ui;
+
+import game.Creature;
+import game.Item;
+import game.Line;
+import game.Point;
+
+public class ThrowAtScreen extends TargetBasedScreen {
+	private Item item;
+	
+	public ThrowAtScreen(Creature player, int sx, int sy, Item item) {
+<span class="nc" id="L12">		super(player, &quot;Throw &quot; + player.nameOf(item) + &quot; at?&quot;, sx, sy);</span>
+<span class="nc" id="L13">		this.item = item;</span>
+<span class="nc" id="L14">	}</span>
+
+	public boolean isAcceptable(int x, int y) {
+<span class="nc bnc" id="L17" title="All 2 branches missed.">		if (!player.canSee(x, y, player.z))</span>
+<span class="nc" id="L18">			return false;</span>
+		
+<span class="nc bnc" id="L20" title="All 2 branches missed.">		for (Point p : new Line(player.x, player.y, x, y)){</span>
+<span class="nc bnc" id="L21" title="All 2 branches missed.">			if (!player.realTile(p.x, p.y, player.z).isGround())</span>
+<span class="nc" id="L22">				return false;</span>
+		}
+		
+<span class="nc" id="L25">		return true;</span>
+	}
+
+	public void selectWorldCoordinate(int x, int y, int screenX, int screenY){
+<span class="nc" id="L29">		player.throwItem(item, x, y, player.z);</span>
+<span class="nc" id="L30">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

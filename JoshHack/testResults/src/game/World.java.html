@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>World.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">World.java</span></div><h1>World.java</h1><pre class="source lang-java linenums">package game;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+public class World {
+	private Tile[][][] tiles;
+	private Item[][][] items;
+	
+	private int width;
+<span class="nc" id="L12">	public int width() { return width; }</span>
+	
+	private int height;
+<span class="nc" id="L15">	public int height() { return height; }</span>
+
+	private int depth;
+<span class="nc" id="L18">	public int depth() { return depth; }</span>
+	
+	private List&lt;Creature&gt; creatures;
+	
+<span class="fc" id="L22">	public World(Tile[][][] tiles){</span>
+<span class="fc" id="L23">		this.tiles = tiles;</span>
+<span class="fc" id="L24">		this.width = tiles.length;</span>
+<span class="fc" id="L25">		this.height = tiles[0].length;</span>
+<span class="fc" id="L26">		this.depth = tiles[0][0].length;</span>
+<span class="fc" id="L27">		this.creatures = new ArrayList&lt;Creature&gt;();</span>
+<span class="fc" id="L28">		this.items = new Item[width][height][depth];</span>
+<span class="fc" id="L29">	}</span>
+
+	public Creature creature(int x, int y, int z){
+<span class="fc bfc" id="L32" title="All 2 branches covered.">		for (Creature c : creatures){</span>
+<span class="pc bpc" id="L33" title="1 of 6 branches missed.">			if (c.x == x &amp;&amp; c.y == y &amp;&amp; c.z == z)</span>
+<span class="fc" id="L34">				return c;</span>
+		}
+<span class="fc" id="L36">		return null;</span>
+	}
+	
+	public Tile tile(int x, int y, int z){
+<span class="pc bpc" id="L40" title="6 of 12 branches missed.">		if (x &lt; 0 || x &gt;= width || y &lt; 0 || y &gt;= height || z &lt; 0 || z &gt;= depth)</span>
+<span class="nc" id="L41">			return Tile.BOUNDS;</span>
+		else
+<span class="fc" id="L43">			return tiles[x][y][z];</span>
+	}
+	
+	public char glyph(int x, int y, int z){
+<span class="nc" id="L47">		Creature creature = creature(x, y, z);</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">		if (creature != null)</span>
+<span class="nc" id="L49">			return creature.glyph();</span>
+		
+<span class="nc bnc" id="L51" title="All 2 branches missed.">		if (item(x,y,z) != null)</span>
+<span class="nc" id="L52">			return item(x,y,z).glyph();</span>
+		
+<span class="nc" id="L54">		return tile(x, y, z).glyph();</span>
+	}
+	
+	public Color color(int x, int y, int z){
+<span class="nc" id="L58">		Creature creature = creature(x, y, z);</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">		if (creature != null)</span>
+<span class="nc" id="L60">			return creature.color();</span>
+		
+<span class="nc bnc" id="L62" title="All 2 branches missed.">		if (item(x,y,z) != null)</span>
+<span class="nc" id="L63">			return item(x,y,z).color();</span>
+		
+<span class="nc" id="L65">		return tile(x, y, z).color();</span>
+	}
+
+	public void dig(int x, int y, int z) {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">		if (tile(x, y, z).isDiggable())</span>
+<span class="nc" id="L70">			tiles[x][y][z] = Tile.FLOOR;</span>
+<span class="nc" id="L71">	}</span>
+	
+	public void addAtEmptyLocation(Creature creature, int z){
+		int x;
+		int y;
+		
+		do {
+<span class="fc" id="L78">			x = (int)(Math.random() * width);</span>
+<span class="fc" id="L79">			y = (int)(Math.random() * height);</span>
+		} 
+<span class="pc bpc" id="L81" title="2 of 4 branches missed.">		while (!tile(x,y,z).isGround() || creature(x,y,z) != null);</span>
+		
+<span class="fc" id="L83">		creature.x = x;</span>
+<span class="fc" id="L84">		creature.y = y;</span>
+<span class="fc" id="L85">		creature.z = z;</span>
+<span class="fc" id="L86">		creatures.add(creature);</span>
+<span class="fc" id="L87">	}</span>
+	
+	public void update(){
+<span class="nc" id="L90">		List&lt;Creature&gt; toUpdate = new ArrayList&lt;Creature&gt;(creatures);</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">		for (Creature creature : toUpdate){</span>
+<span class="nc" id="L92">			creature.update();</span>
+		}
+<span class="nc" id="L94">	}</span>
+
+	public void remove(Creature other) {
+<span class="nc" id="L97">		creatures.remove(other);</span>
+<span class="nc" id="L98">	}</span>
+	
+	public void remove(Item item) {
+<span class="nc bnc" id="L101" title="All 2 branches missed.">		for (int x = 0; x &lt; width; x++){</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">			for (int y = 0; y &lt; height; y++){</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">				for (int z = 0; z &lt; depth; z++){</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">					if (items[x][y][z] == item) {</span>
+<span class="nc" id="L105">						items[x][y][z] = null;</span>
+<span class="nc" id="L106">						return;</span>
+					}
+				}	
+			}	
+		}
+<span class="nc" id="L111">	}</span>
+	
+	public Item item(int x, int y, int z){
+<span class="nc" id="L114">		return items[x][y][z];</span>
+	}
+	
+	public void addAtEmptyLocation(Item item, int depth) {
+		int x;
+		int y;
+		
+		do {
+<span class="nc" id="L122">			x = (int)(Math.random() * width);</span>
+<span class="nc" id="L123">			y = (int)(Math.random() * height);</span>
+		} 
+<span class="nc bnc" id="L125" title="All 4 branches missed.">		while (!tile(x,y,depth).isGround() || item(x,y,depth) != null);</span>
+		
+<span class="nc" id="L127">		items[x][y][depth] = item;</span>
+<span class="nc" id="L128">	}</span>
+
+	public void remove(int x, int y, int z) {
+<span class="nc" id="L131">		items[x][y][z] = null;</span>
+<span class="nc" id="L132">	}</span>
+
+	public boolean addAtEmptySpace(Item item, int x, int y, int z){
+<span class="nc bnc" id="L135" title="All 2 branches missed.">		if (item == null)</span>
+<span class="nc" id="L136">			return true;</span>
+		
+<span class="nc" id="L138">		List&lt;Point&gt; points = new ArrayList&lt;Point&gt;();</span>
+<span class="nc" id="L139">		List&lt;Point&gt; checked = new ArrayList&lt;Point&gt;();</span>
+		
+<span class="nc" id="L141">		points.add(new Point(x, y, z));</span>
+		
+<span class="nc bnc" id="L143" title="All 2 branches missed.">		while (!points.isEmpty()){</span>
+<span class="nc" id="L144">			Point p = points.remove(0);</span>
+<span class="nc" id="L145">			checked.add(p);</span>
+			
+<span class="nc bnc" id="L147" title="All 2 branches missed.">			if (!tile(p.x, p.y, p.z).isGround())</span>
+<span class="nc" id="L148">				continue;</span>
+				
+<span class="nc bnc" id="L150" title="All 2 branches missed.">			if (items[p.x][p.y][p.z] == null){</span>
+<span class="nc" id="L151">				items[p.x][p.y][p.z] = item;</span>
+<span class="nc" id="L152">				Creature c = this.creature(p.x, p.y, p.z);</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">				if (c != null)</span>
+<span class="nc" id="L154">					c.notify(&quot;A %s lands between your feet.&quot;, c.nameOf(item));</span>
+<span class="nc" id="L155">				return true;</span>
+			} else {
+<span class="nc" id="L157">				List&lt;Point&gt; neighbors = p.neighbors8();</span>
+<span class="nc" id="L158">				neighbors.removeAll(checked);</span>
+<span class="nc" id="L159">				points.addAll(neighbors);</span>
+			}
+		}
+<span class="nc" id="L162">		return false;</span>
+	}
+
+	public void add(Creature pet) {
+<span class="nc" id="L166">		creatures.add(pet);</span>
+<span class="nc" id="L167">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

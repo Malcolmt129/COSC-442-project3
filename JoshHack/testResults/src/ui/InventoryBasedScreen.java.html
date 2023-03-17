@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>InventoryBasedScreen.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">ui</a> &gt; <span class="el_source">InventoryBasedScreen.java</span></div><h1>InventoryBasedScreen.java</h1><pre class="source lang-java linenums">package ui;
+
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import asciiPanel.AsciiPanel;
+import game.Creature;
+import game.Item;
+
+public abstract class InventoryBasedScreen implements Screen {
+
+	protected Creature player;
+	private String letters;
+	
+	protected abstract String getVerb();
+	protected abstract boolean isAcceptable(Item item);
+	protected abstract Screen use(Item item);
+	
+<span class="nc" id="L18">	public InventoryBasedScreen(Creature player){</span>
+<span class="nc" id="L19">		this.player = player;</span>
+<span class="nc" id="L20">		this.letters = &quot;abcdefghijklmnopqrstuvwxyz&quot;;</span>
+<span class="nc" id="L21">	}</span>
+	
+	public void displayOutput(AsciiPanel terminal) {
+<span class="nc" id="L24">		ArrayList&lt;String&gt; lines = getList();</span>
+		
+<span class="nc" id="L26">		int y = 23 - lines.size();</span>
+<span class="nc" id="L27">		int x = 4;</span>
+
+<span class="nc bnc" id="L29" title="All 2 branches missed.">		if (lines.size() &gt; 0)</span>
+<span class="nc" id="L30">			terminal.clear(' ', x, y, 20, lines.size());</span>
+		
+<span class="nc bnc" id="L32" title="All 2 branches missed.">		for (String line : lines){</span>
+<span class="nc" id="L33">			terminal.write(line, x, y++);</span>
+		}
+		
+<span class="nc" id="L36">		terminal.clear(' ', 0, 23, 80, 1);</span>
+<span class="nc" id="L37">		terminal.write(&quot;What would you like to &quot; + getVerb() + &quot;?&quot;, 2, 23);</span>
+		
+<span class="nc" id="L39">		terminal.repaint();</span>
+<span class="nc" id="L40">	}</span>
+	
+	private ArrayList&lt;String&gt; getList() {
+<span class="nc" id="L43">		ArrayList&lt;String&gt; lines = new ArrayList&lt;String&gt;();</span>
+<span class="nc" id="L44">		Item[] inventory = player.inventory().getItems();</span>
+		
+<span class="nc bnc" id="L46" title="All 2 branches missed.">		for (int i = 0; i &lt; inventory.length; i++){</span>
+<span class="nc" id="L47">			Item item = inventory[i];</span>
+			
+<span class="nc bnc" id="L49" title="All 4 branches missed.">			if (item == null || !isAcceptable(item))</span>
+<span class="nc" id="L50">				continue;</span>
+			
+<span class="nc" id="L52">			String line = letters.charAt(i) + &quot; - &quot; + item.glyph() + &quot; &quot; + player.nameOf(item);</span>
+			
+<span class="nc bnc" id="L54" title="All 4 branches missed.">			if(item == player.weapon() || item == player.armor())</span>
+<span class="nc" id="L55">				line += &quot; (equipped)&quot;;</span>
+			
+<span class="nc" id="L57">			lines.add(line);</span>
+		}
+<span class="nc" id="L59">		return lines;</span>
+	}
+
+	public Screen respondToUserInput(KeyEvent key) {
+<span class="nc" id="L63">		char c = key.getKeyChar();</span>
+
+<span class="nc" id="L65">		Item[] items = player.inventory().getItems();</span>
+		
+<span class="nc bnc" id="L67" title="All 2 branches missed.">		if (letters.indexOf(c) &gt; -1 </span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">				&amp;&amp; items.length &gt; letters.indexOf(c)</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">				&amp;&amp; items[letters.indexOf(c)] != null</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">				&amp;&amp; isAcceptable(items[letters.indexOf(c)])) {</span>
+<span class="nc" id="L71">			return use(items[letters.indexOf(c)]);</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">		} else if (key.getKeyCode() == KeyEvent.VK_ESCAPE) {</span>
+<span class="nc" id="L73">			return null;</span>
+		} else {
+<span class="nc" id="L75">			return this;</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>StuffFactory.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">StuffFactory.java</span></div><h1>StuffFactory.java</h1><pre class="source lang-java linenums">package game;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+import asciiPanel.AsciiPanel;
+
+public class StuffFactory {
+	private World world;
+	private Map&lt;String, Color&gt; potionColors;
+	private List&lt;String&gt; potionAppearances;
+	
+<span class="fc" id="L18">	public StuffFactory(World world){</span>
+<span class="fc" id="L19">		this.world = world;</span>
+		
+<span class="fc" id="L21">		setUpPotionAppearances();</span>
+<span class="fc" id="L22">	}</span>
+	
+	private void setUpPotionAppearances(){
+<span class="fc" id="L25">		potionColors = new HashMap&lt;String, Color&gt;();</span>
+<span class="fc" id="L26">		potionColors.put(&quot;red potion&quot;, AsciiPanel.brightRed);</span>
+<span class="fc" id="L27">		potionColors.put(&quot;yellow potion&quot;, AsciiPanel.brightYellow);</span>
+<span class="fc" id="L28">		potionColors.put(&quot;green potion&quot;, AsciiPanel.brightGreen);</span>
+<span class="fc" id="L29">		potionColors.put(&quot;cyan potion&quot;, AsciiPanel.brightCyan);</span>
+<span class="fc" id="L30">		potionColors.put(&quot;blue potion&quot;, AsciiPanel.brightBlue);</span>
+<span class="fc" id="L31">		potionColors.put(&quot;magenta potion&quot;, AsciiPanel.brightMagenta);</span>
+<span class="fc" id="L32">		potionColors.put(&quot;dark potion&quot;, AsciiPanel.brightBlack);</span>
+<span class="fc" id="L33">		potionColors.put(&quot;grey potion&quot;, AsciiPanel.white);</span>
+<span class="fc" id="L34">		potionColors.put(&quot;light potion&quot;, AsciiPanel.brightWhite);</span>
+
+<span class="fc" id="L36">		potionAppearances = new ArrayList&lt;String&gt;(potionColors.keySet());</span>
+<span class="fc" id="L37">		Collections.shuffle(potionAppearances);</span>
+<span class="fc" id="L38">	}</span>
+	
+	public Creature newPlayer(List&lt;String&gt; messages, FieldOfView fov){
+<span class="nc" id="L41">		Creature player = new Creature(world, '@', AsciiPanel.brightWhite, &quot;player&quot;, 100, 20, 5);</span>
+<span class="nc" id="L42">		world.addAtEmptyLocation(player, 0);</span>
+<span class="nc" id="L43">		new PlayerAi(player, messages, fov);</span>
+<span class="nc" id="L44">		return player;</span>
+	}
+	
+	public Creature newFungus(int depth){
+<span class="nc" id="L48">		Creature fungus = new Creature(world, 'f', AsciiPanel.green, &quot;fungus&quot;, 10, 0, 0);</span>
+<span class="nc" id="L49">		world.addAtEmptyLocation(fungus, depth);</span>
+<span class="nc" id="L50">		new FungusAi(fungus, this);</span>
+<span class="nc" id="L51">		return fungus;</span>
+	}
+	
+	public Creature newBat(int depth){
+<span class="nc" id="L55">		Creature bat = new Creature(world, 'b', AsciiPanel.brightYellow, &quot;bat&quot;, 15, 5, 0);</span>
+<span class="nc" id="L56">		world.addAtEmptyLocation(bat, depth);</span>
+<span class="nc" id="L57">		new BatAi(bat);</span>
+<span class="nc" id="L58">		return bat;</span>
+	}
+	
+	public Creature newZombie(int depth, Creature player){
+<span class="fc" id="L62">		Creature zombie = new Creature(world, 'z', AsciiPanel.white, &quot;zombie&quot;, 50, 10, 10);</span>
+<span class="fc" id="L63">		world.addAtEmptyLocation(zombie, depth);</span>
+<span class="fc" id="L64">		new ZombieAi(zombie, player);</span>
+<span class="fc" id="L65">		return zombie;</span>
+	}
+
+	public Creature newGoblin(int depth, Creature player){
+<span class="nc" id="L69">		Creature goblin = new Creature(world, 'g', AsciiPanel.brightGreen, &quot;goblin&quot;, 66, 15, 5);</span>
+<span class="nc" id="L70">		new GoblinAi(goblin, player);</span>
+<span class="nc" id="L71">		goblin.equip(randomWeapon(depth));</span>
+<span class="nc" id="L72">		goblin.equip(randomArmor(depth));</span>
+<span class="nc" id="L73">		world.addAtEmptyLocation(goblin, depth);</span>
+<span class="nc" id="L74">		return goblin;</span>
+	}
+	
+	public Item newRock(int depth){
+<span class="nc" id="L78">		Item rock = new Item(',', AsciiPanel.yellow, &quot;rock&quot;, null);</span>
+<span class="nc" id="L79">		rock.modifyThrownAttackValue(5);</span>
+<span class="nc" id="L80">		world.addAtEmptyLocation(rock, depth);</span>
+<span class="nc" id="L81">		return rock;</span>
+	}
+	
+	public Item newVictoryItem(int depth){
+<span class="nc" id="L85">		Item item = new Item('*', AsciiPanel.brightWhite, &quot;teddy bear&quot;, null);</span>
+<span class="nc" id="L86">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L87">		return item;</span>
+	}
+	
+	public Item newBread(int depth){
+<span class="nc" id="L91">		Item item = new Item('%', AsciiPanel.yellow, &quot;bread&quot;, null);</span>
+<span class="nc" id="L92">		item.modifyFoodValue(400);</span>
+<span class="nc" id="L93">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L94">		return item;</span>
+	}
+	
+	public Item newFruit(int depth){
+<span class="nc" id="L98">		Item item = new Item('%', AsciiPanel.brightRed, &quot;apple&quot;, null);</span>
+<span class="nc" id="L99">		item.modifyFoodValue(100);</span>
+<span class="nc" id="L100">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L101">		return item;</span>
+	}
+	
+	public Item newDagger(int depth){
+<span class="nc" id="L105">		Item item = new Item(')', AsciiPanel.white, &quot;dagger&quot;, null);</span>
+<span class="nc" id="L106">		item.modifyAttackValue(5);</span>
+<span class="nc" id="L107">		item.modifyThrownAttackValue(5);</span>
+<span class="nc" id="L108">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L109">		return item;</span>
+	}
+	
+	public Item newSword(int depth){
+<span class="nc" id="L113">		Item item = new Item(')', AsciiPanel.brightWhite, &quot;sword&quot;, null);</span>
+<span class="nc" id="L114">		item.modifyAttackValue(10);</span>
+<span class="nc" id="L115">		item.modifyThrownAttackValue(3);</span>
+<span class="nc" id="L116">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L117">		return item;</span>
+	}
+	
+	public Item newStaff(int depth){
+<span class="nc" id="L121">		Item item = new Item(')', AsciiPanel.yellow, &quot;staff&quot;, null);</span>
+<span class="nc" id="L122">		item.modifyAttackValue(5);</span>
+<span class="nc" id="L123">		item.modifyDefenseValue(3);</span>
+<span class="nc" id="L124">		item.modifyThrownAttackValue(3);</span>
+<span class="nc" id="L125">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L126">		return item;</span>
+	}
+
+	public Item newBow(int depth){
+<span class="nc" id="L130">		Item item = new Item(')', AsciiPanel.yellow, &quot;bow&quot;, null);</span>
+<span class="nc" id="L131">		item.modifyAttackValue(1);</span>
+<span class="nc" id="L132">		item.modifyRangedAttackValue(5);</span>
+<span class="nc" id="L133">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L134">		return item;</span>
+	}
+	
+	public Item newEdibleWeapon(int depth){
+<span class="nc" id="L138">		Item item = new Item(')', AsciiPanel.yellow, &quot;baguette&quot;, null);</span>
+<span class="nc" id="L139">		item.modifyAttackValue(3);</span>
+<span class="nc" id="L140">		item.modifyFoodValue(100);</span>
+<span class="nc" id="L141">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L142">		return item;</span>
+	}
+	
+	public Item newLightArmor(int depth){
+<span class="nc" id="L146">		Item item = new Item('[', AsciiPanel.green, &quot;tunic&quot;, null);</span>
+<span class="nc" id="L147">		item.modifyDefenseValue(2);</span>
+<span class="nc" id="L148">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L149">		return item;</span>
+	}
+	
+	public Item newMediumArmor(int depth){
+<span class="nc" id="L153">		Item item = new Item('[', AsciiPanel.white, &quot;chainmail&quot;, null);</span>
+<span class="nc" id="L154">		item.modifyDefenseValue(4);</span>
+<span class="nc" id="L155">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L156">		return item;</span>
+	}
+	
+	public Item newHeavyArmor(int depth){
+<span class="nc" id="L160">		Item item = new Item('[', AsciiPanel.brightWhite, &quot;platemail&quot;, null);</span>
+<span class="nc" id="L161">		item.modifyDefenseValue(6);</span>
+<span class="nc" id="L162">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L163">		return item;</span>
+	}
+	
+	public Item randomWeapon(int depth){
+<span class="nc bnc" id="L167" title="All 4 branches missed.">		switch ((int)(Math.random() * 3)){</span>
+<span class="nc" id="L168">		case 0: return newDagger(depth);</span>
+<span class="nc" id="L169">		case 1: return newSword(depth);</span>
+<span class="nc" id="L170">		case 2: return newBow(depth);</span>
+<span class="nc" id="L171">		default: return newStaff(depth);</span>
+		}
+	}
+
+	public Item randomArmor(int depth){
+<span class="nc bnc" id="L176" title="All 3 branches missed.">		switch ((int)(Math.random() * 3)){</span>
+<span class="nc" id="L177">		case 0: return newLightArmor(depth);</span>
+<span class="nc" id="L178">		case 1: return newMediumArmor(depth);</span>
+<span class="nc" id="L179">		default: return newHeavyArmor(depth);</span>
+		}
+	}
+	
+	public Item newPotionOfHealth(int depth){
+<span class="nc" id="L184">		String appearance = potionAppearances.get(0);</span>
+<span class="nc" id="L185">		final Item item = new Item('!', potionColors.get(appearance), &quot;health potion&quot;, appearance);</span>
+<span class="nc" id="L186">		item.setQuaffEffect(new Effect(1){</span>
+			public void start(Creature creature){
+<span class="nc bnc" id="L188" title="All 2 branches missed.">				if (creature.hp() == creature.maxHp())</span>
+<span class="nc" id="L189">					return;</span>
+				
+<span class="nc" id="L191">				creature.modifyHp(15, &quot;Killed by a health potion?&quot;);</span>
+<span class="nc" id="L192">				creature.doAction(item, &quot;look healthier&quot;);</span>
+<span class="nc" id="L193">			}</span>
+		});
+		
+<span class="nc" id="L196">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L197">		return item;</span>
+	}
+	
+	public Item newPotionOfMana(int depth){
+<span class="nc" id="L201">		String appearance = potionAppearances.get(1);</span>
+<span class="nc" id="L202">		final Item item = new Item('!', potionColors.get(appearance), &quot;mana potion&quot;, appearance);</span>
+<span class="nc" id="L203">		item.setQuaffEffect(new Effect(1){</span>
+			public void start(Creature creature){
+<span class="nc bnc" id="L205" title="All 2 branches missed.">				if (creature.mana() == creature.maxMana())</span>
+<span class="nc" id="L206">					return;</span>
+				
+<span class="nc" id="L208">				creature.modifyMana(10);</span>
+<span class="nc" id="L209">				creature.doAction(item, &quot;look restored&quot;);</span>
+<span class="nc" id="L210">			}</span>
+		});
+		
+<span class="nc" id="L213">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L214">		return item;</span>
+	}
+	
+	public Item newPotionOfSlowHealth(int depth){
+<span class="nc" id="L218">		String appearance = potionAppearances.get(2);</span>
+<span class="nc" id="L219">		final Item item = new Item('!', potionColors.get(appearance), &quot;slow health potion&quot;, appearance);</span>
+<span class="nc" id="L220">		item.setQuaffEffect(new Effect(100){</span>
+			public void start(Creature creature){
+<span class="nc" id="L222">				creature.doAction(item, &quot;look a little better&quot;);</span>
+<span class="nc" id="L223">			}</span>
+			
+			public void update(Creature creature){
+<span class="nc" id="L226">				super.update(creature);</span>
+<span class="nc" id="L227">				creature.modifyHp(1, &quot;Killed by a slow health potion?&quot;);</span>
+<span class="nc" id="L228">			}</span>
+		});
+		
+<span class="nc" id="L231">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L232">		return item;</span>
+	}
+	
+	public Item newPotionOfPoison(int depth){
+<span class="nc" id="L236">		String appearance = potionAppearances.get(3);</span>
+<span class="nc" id="L237">		final Item item = new Item('!', potionColors.get(appearance), &quot;poison potion&quot;, appearance);</span>
+<span class="nc" id="L238">		item.setQuaffEffect(new Effect(20){</span>
+			public void start(Creature creature){
+<span class="nc" id="L240">				creature.doAction(item, &quot;look sick&quot;);</span>
+<span class="nc" id="L241">			}</span>
+			
+			public void update(Creature creature){
+<span class="nc" id="L244">				super.update(creature);</span>
+<span class="nc" id="L245">				creature.modifyHp(-1, &quot;Died of poison.&quot;);</span>
+<span class="nc" id="L246">			}</span>
+		});
+		
+<span class="nc" id="L249">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L250">		return item;</span>
+	}
+	
+	public Item newPotionOfWarrior(int depth){
+<span class="nc" id="L254">		String appearance = potionAppearances.get(4);</span>
+<span class="nc" id="L255">		final Item item = new Item('!', potionColors.get(appearance), &quot;warrior's potion&quot;, appearance);</span>
+<span class="nc" id="L256">		item.setQuaffEffect(new Effect(20){</span>
+			public void start(Creature creature){
+<span class="nc" id="L258">				creature.modifyAttackValue(5);</span>
+<span class="nc" id="L259">				creature.modifyDefenseValue(5);</span>
+<span class="nc" id="L260">				creature.doAction(item, &quot;look stronger&quot;);</span>
+<span class="nc" id="L261">			}</span>
+			public void end(Creature creature){
+<span class="nc" id="L263">				creature.modifyAttackValue(-5);</span>
+<span class="nc" id="L264">				creature.modifyDefenseValue(-5);</span>
+<span class="nc" id="L265">				creature.doAction(&quot;look less strong&quot;);</span>
+<span class="nc" id="L266">			}</span>
+		});
+		
+<span class="nc" id="L269">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L270">		return item;</span>
+	}
+
+	public Item newPotionOfArcher(int depth){
+<span class="nc" id="L274">		String appearance = potionAppearances.get(5);</span>
+<span class="nc" id="L275">		final Item item = new Item('!', potionColors.get(appearance), &quot;archers potion&quot;, appearance);</span>
+<span class="nc" id="L276">		item.setQuaffEffect(new Effect(20){</span>
+			public void start(Creature creature){
+<span class="nc" id="L278">				creature.modifyVisionRadius(3);</span>
+<span class="nc" id="L279">				creature.doAction(item, &quot;look more alert&quot;);</span>
+<span class="nc" id="L280">			}</span>
+			public void end(Creature creature){
+<span class="nc" id="L282">				creature.modifyVisionRadius(-3);</span>
+<span class="nc" id="L283">				creature.doAction(&quot;look less alert&quot;);</span>
+<span class="nc" id="L284">			}</span>
+		});
+		
+<span class="nc" id="L287">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L288">		return item;</span>
+	}
+
+	public Item newPotionOfExperience(int depth){
+<span class="nc" id="L292">		String appearance = potionAppearances.get(6);</span>
+<span class="nc" id="L293">		final Item item = new Item('!', potionColors.get(appearance), &quot;experience potion&quot;, appearance);</span>
+<span class="nc" id="L294">		item.setQuaffEffect(new Effect(20){</span>
+			public void start(Creature creature){
+<span class="nc" id="L296">				creature.doAction(item, &quot;look more experienced&quot;);</span>
+<span class="nc" id="L297">				creature.modifyXp(creature.level() * 5);</span>
+<span class="nc" id="L298">			}</span>
+		});
+		
+<span class="nc" id="L301">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L302">		return item;</span>
+	}
+	
+	public Item randomPotion(int depth){
+<span class="nc bnc" id="L306" title="All 9 branches missed.">		switch ((int)(Math.random() * 9)){</span>
+<span class="nc" id="L307">		case 0: return newPotionOfHealth(depth);</span>
+<span class="nc" id="L308">		case 1: return newPotionOfHealth(depth);</span>
+<span class="nc" id="L309">		case 2: return newPotionOfMana(depth);</span>
+<span class="nc" id="L310">		case 3: return newPotionOfMana(depth);</span>
+<span class="nc" id="L311">		case 4: return newPotionOfSlowHealth(depth);</span>
+<span class="nc" id="L312">		case 5: return newPotionOfPoison(depth);</span>
+<span class="nc" id="L313">		case 6: return newPotionOfWarrior(depth);</span>
+<span class="nc" id="L314">		case 7: return newPotionOfArcher(depth);</span>
+<span class="nc" id="L315">		default: return newPotionOfExperience(depth);</span>
+		}
+	}
+	
+	public Item newWhiteMagesSpellbook(int depth) {
+<span class="nc" id="L320">		Item item = new Item('+', AsciiPanel.brightWhite, &quot;white mage's spellbook&quot;, null);</span>
+<span class="nc" id="L321">		item.addWrittenSpell(&quot;minor heal&quot;, 4, new Effect(1){</span>
+			public void start(Creature creature){
+<span class="nc bnc" id="L323" title="All 2 branches missed.">				if (creature.hp() == creature.maxHp())</span>
+<span class="nc" id="L324">					return;</span>
+				
+<span class="nc" id="L326">				creature.modifyHp(20, &quot;Killed by a minor heal spell?&quot;);</span>
+<span class="nc" id="L327">				creature.doAction(&quot;look healthier&quot;);</span>
+<span class="nc" id="L328">			}</span>
+		});
+		
+<span class="nc" id="L331">		item.addWrittenSpell(&quot;major heal&quot;, 8, new Effect(1){</span>
+			public void start(Creature creature){
+<span class="nc bnc" id="L333" title="All 2 branches missed.">				if (creature.hp() == creature.maxHp())</span>
+<span class="nc" id="L334">					return;</span>
+				
+<span class="nc" id="L336">				creature.modifyHp(50, &quot;Killed by a major heal spell?&quot;);</span>
+<span class="nc" id="L337">				creature.doAction(&quot;look healthier&quot;);</span>
+<span class="nc" id="L338">			}</span>
+		});
+		
+<span class="nc" id="L341">		item.addWrittenSpell(&quot;slow heal&quot;, 12, new Effect(50){</span>
+			public void update(Creature creature){
+<span class="nc" id="L343">				super.update(creature);</span>
+<span class="nc" id="L344">				creature.modifyHp(2, &quot;Killed by a slow heal spell?&quot;);</span>
+<span class="nc" id="L345">			}</span>
+		});
+
+<span class="nc" id="L348">		item.addWrittenSpell(&quot;inner strength&quot;, 16, new Effect(50){</span>
+			public void start(Creature creature){
+<span class="nc" id="L350">				creature.modifyAttackValue(2);</span>
+<span class="nc" id="L351">				creature.modifyDefenseValue(2);</span>
+<span class="nc" id="L352">				creature.modifyVisionRadius(1);</span>
+<span class="nc" id="L353">				creature.modifyRegenHpPer1000(10);</span>
+<span class="nc" id="L354">				creature.modifyRegenManaPer1000(-10);</span>
+<span class="nc" id="L355">				creature.doAction(&quot;seem to glow with inner strength&quot;);</span>
+<span class="nc" id="L356">			}</span>
+			public void update(Creature creature){
+<span class="nc" id="L358">				super.update(creature);</span>
+<span class="nc bnc" id="L359" title="All 2 branches missed.">				if (Math.random() &lt; 0.25)</span>
+<span class="nc" id="L360">					creature.modifyHp(1, &quot;Killed by inner strength spell?&quot;);</span>
+<span class="nc" id="L361">			}</span>
+			public void end(Creature creature){
+<span class="nc" id="L363">				creature.modifyAttackValue(-2);</span>
+<span class="nc" id="L364">				creature.modifyDefenseValue(-2);</span>
+<span class="nc" id="L365">				creature.modifyVisionRadius(-1);</span>
+<span class="nc" id="L366">				creature.modifyRegenHpPer1000(-10);</span>
+<span class="nc" id="L367">				creature.modifyRegenManaPer1000(10);</span>
+<span class="nc" id="L368">			}</span>
+		});
+		
+<span class="nc" id="L371">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L372">		return item;</span>
+	}
+	
+	public Item newBlueMagesSpellbook(int depth) {
+<span class="nc" id="L376">		Item item = new Item('+', AsciiPanel.brightBlue, &quot;blue mage's spellbook&quot;, null);</span>
+
+<span class="nc" id="L378">		item.addWrittenSpell(&quot;blood to mana&quot;, 1, new Effect(1){</span>
+			public void start(Creature creature){
+<span class="nc" id="L380">				int amount = Math.min(creature.hp() - 1, creature.maxMana() - creature.mana());</span>
+<span class="nc" id="L381">				creature.modifyHp(-amount, &quot;Killed by a blood to mana spell.&quot;);</span>
+<span class="nc" id="L382">				creature.modifyMana(amount);</span>
+<span class="nc" id="L383">			}</span>
+		});
+		
+<span class="nc" id="L386">		item.addWrittenSpell(&quot;blink&quot;, 6, new Effect(1){</span>
+			public void start(Creature creature){
+<span class="nc" id="L388">				creature.doAction(&quot;fade out&quot;);</span>
+				
+<span class="nc" id="L390">				int mx = 0;</span>
+<span class="nc" id="L391">				int my = 0;</span>
+				
+				do
+				{
+<span class="nc" id="L395">					mx = (int)(Math.random() * 11) - 5;</span>
+<span class="nc" id="L396">					my = (int)(Math.random() * 11) - 5;</span>
+				}
+<span class="nc bnc" id="L398" title="All 2 branches missed.">				while (!creature.canEnter(creature.x+mx, creature.y+my, creature.z)</span>
+<span class="nc bnc" id="L399" title="All 2 branches missed.">						&amp;&amp; creature.canSee(creature.x+mx, creature.y+my, creature.z));</span>
+				
+<span class="nc" id="L401">				creature.moveBy(mx, my, 0);</span>
+				
+<span class="nc" id="L403">				creature.doAction(&quot;fade in&quot;);</span>
+<span class="nc" id="L404">			}</span>
+		});
+		
+<span class="nc" id="L407">		item.addWrittenSpell(&quot;summon bats&quot;, 11, new Effect(1){</span>
+			public void start(Creature creature){
+<span class="nc bnc" id="L409" title="All 2 branches missed.">				for (int ox = -1; ox &lt; 2; ox++){</span>
+<span class="nc bnc" id="L410" title="All 2 branches missed.">					for (int oy = -1; oy &lt; 2; oy++){</span>
+<span class="nc" id="L411">						int nx = creature.x + ox;</span>
+<span class="nc" id="L412">						int ny = creature.y + oy;</span>
+<span class="nc bnc" id="L413" title="All 4 branches missed.">						if (ox == 0 &amp;&amp; oy == 0 </span>
+<span class="nc bnc" id="L414" title="All 2 branches missed.">								|| creature.creature(nx, ny, creature.z) != null)</span>
+<span class="nc" id="L415">							continue;</span>
+						
+<span class="nc" id="L417">						Creature bat = newBat(0);</span>
+						
+<span class="nc bnc" id="L419" title="All 2 branches missed.">						if (!bat.canEnter(nx, ny, creature.z)){</span>
+<span class="nc" id="L420">							world.remove(bat);</span>
+<span class="nc" id="L421">							continue;</span>
+						}
+						
+<span class="nc" id="L424">						bat.x = nx;</span>
+<span class="nc" id="L425">						bat.y = ny;</span>
+<span class="nc" id="L426">						bat.z = creature.z;</span>
+						
+<span class="nc" id="L428">						creature.summon(bat);</span>
+					}
+				}
+<span class="nc" id="L431">			}</span>
+		});
+		
+<span class="nc" id="L434">		item.addWrittenSpell(&quot;detect creatures&quot;, 16, new Effect(75){</span>
+			public void start(Creature creature){
+<span class="nc" id="L436">				creature.doAction(&quot;look far off into the distance&quot;);</span>
+<span class="nc" id="L437">				creature.modifyDetectCreatures(1);</span>
+<span class="nc" id="L438">			}</span>
+			public void end(Creature creature){
+<span class="nc" id="L440">				creature.modifyDetectCreatures(-1);</span>
+<span class="nc" id="L441">			}</span>
+		});
+<span class="nc" id="L443">		world.addAtEmptyLocation(item, depth);</span>
+<span class="nc" id="L444">		return item;</span>
+	}
+	
+
+	public Item randomSpellBook(int depth){
+<span class="nc bnc" id="L449" title="All 2 branches missed.">		switch ((int)(Math.random() * 2)){</span>
+<span class="nc" id="L450">		case 0: return newWhiteMagesSpellbook(depth);</span>
+<span class="nc" id="L451">		default: return newBlueMagesSpellbook(depth);</span>
+		}
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

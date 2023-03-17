@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>WorldBuilder.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">WorldBuilder.java</span></div><h1>WorldBuilder.java</h1><pre class="source lang-java linenums">package game;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class WorldBuilder {
+	private int width;
+	private int height;
+	private int depth;
+	private Tile[][][] tiles;
+	private int[][][] regions;
+	private int nextRegion;
+
+<span class="fc" id="L15">	public WorldBuilder(int width, int height, int depth) {</span>
+<span class="fc" id="L16">		this.width = width;</span>
+<span class="fc" id="L17">		this.height = height;</span>
+<span class="fc" id="L18">		this.depth = depth;</span>
+<span class="fc" id="L19">		this.tiles = new Tile[width][height][depth];</span>
+<span class="fc" id="L20">		this.regions = new int[width][height][depth];</span>
+<span class="fc" id="L21">		this.nextRegion = 1;</span>
+<span class="fc" id="L22">	}</span>
+
+	public World build() {
+<span class="fc" id="L25">		return new World(tiles);</span>
+	}
+
+	private WorldBuilder randomizeTiles() {
+<span class="fc bfc" id="L29" title="All 2 branches covered.">		for (int x = 0; x &lt; width; x++) {</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">			for (int y = 0; y &lt; height; y++) {</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">				for (int z = 0; z &lt; depth; z++) {</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">					tiles[x][y][z] = Math.random() &lt; 0.5 ? Tile.FLOOR : Tile.WALL;</span>
+				}
+			}
+		}
+<span class="fc" id="L36">		return this;</span>
+	}
+
+	private WorldBuilder smooth(int times) {
+<span class="fc" id="L40">		Tile[][][] tiles2 = new Tile[width][height][depth];</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		for (int time = 0; time &lt; times; time++) {</span>
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">			for (int x = 0; x &lt; width; x++) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">				for (int y = 0; y &lt; height; y++) {</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">					for (int z = 0; z &lt; depth; z++) {</span>
+<span class="fc" id="L46">						int floors = 0;</span>
+<span class="fc" id="L47">						int rocks = 0;</span>
+	
+<span class="fc bfc" id="L49" title="All 2 branches covered.">						for (int ox = -1; ox &lt; 2; ox++) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">							for (int oy = -1; oy &lt; 2; oy++) {</span>
+<span class="fc bfc" id="L51" title="All 6 branches covered.">								if (x + ox &lt; 0 || x + ox &gt;= width || y + oy &lt; 0</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">										|| y + oy &gt;= height)</span>
+<span class="fc" id="L53">									continue;</span>
+	
+<span class="fc bfc" id="L55" title="All 2 branches covered.">								if (tiles[x + ox][y + oy][z] == Tile.FLOOR)</span>
+<span class="fc" id="L56">									floors++;</span>
+								else
+<span class="fc" id="L58">									rocks++;</span>
+							}
+						}
+<span class="fc bfc" id="L61" title="All 2 branches covered.">						tiles2[x][y][z] = floors &gt;= rocks ? Tile.FLOOR : Tile.WALL;</span>
+					}
+				}
+			}
+<span class="fc" id="L65">			tiles = tiles2;</span>
+		}
+<span class="fc" id="L67">		return this;</span>
+	}
+	
+	private WorldBuilder createRegions(){
+<span class="fc" id="L71">		regions = new int[width][height][depth];</span>
+		
+<span class="fc bfc" id="L73" title="All 2 branches covered.">		for (int z = 0; z &lt; depth; z++){</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">			for (int x = 0; x &lt; width; x++){</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">				for (int y = 0; y &lt; height; y++){</span>
+<span class="fc bfc" id="L76" title="All 4 branches covered.">					if (tiles[x][y][z] != Tile.WALL &amp;&amp; regions[x][y][z] == 0){</span>
+<span class="fc" id="L77">						int size = fillRegion(nextRegion++, x, y, z);</span>
+						
+<span class="fc bfc" id="L79" title="All 2 branches covered.">						if (size &lt; 25)</span>
+<span class="fc" id="L80">							removeRegion(nextRegion - 1, z);</span>
+					}
+				}
+			}
+		}
+<span class="fc" id="L85">		return this;</span>
+	}
+	
+	private void removeRegion(int region, int z){
+<span class="fc bfc" id="L89" title="All 2 branches covered.">		for (int x = 0; x &lt; width; x++){</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">			for (int y = 0; y &lt; height; y++){</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">				if (regions[x][y][z] == region){</span>
+<span class="fc" id="L92">					regions[x][y][z] = 0;</span>
+<span class="fc" id="L93">					tiles[x][y][z] = Tile.WALL;</span>
+				}
+			}
+		}
+<span class="fc" id="L97">	}</span>
+	
+	private int fillRegion(int region, int x, int y, int z) {
+<span class="fc" id="L100">		int size = 1;</span>
+<span class="fc" id="L101">		ArrayList&lt;Point&gt; open = new ArrayList&lt;Point&gt;();</span>
+<span class="fc" id="L102">		open.add(new Point(x,y,z));</span>
+<span class="fc" id="L103">		regions[x][y][z] = region;</span>
+		
+<span class="fc bfc" id="L105" title="All 2 branches covered.">		while (!open.isEmpty()){</span>
+<span class="fc" id="L106">			Point p = open.remove(0);</span>
+
+<span class="fc bfc" id="L108" title="All 2 branches covered.">			for (Point neighbor : p.neighbors8()){</span>
+<span class="fc bfc" id="L109" title="All 8 branches covered.">				if (neighbor.x &lt; 0 || neighbor.y &lt; 0 || neighbor.x &gt;= width || neighbor.y &gt;= height)</span>
+<span class="fc" id="L110">					continue;</span>
+				
+<span class="fc bfc" id="L112" title="All 2 branches covered.">				if (regions[neighbor.x][neighbor.y][neighbor.z] &gt; 0</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">						|| tiles[neighbor.x][neighbor.y][neighbor.z] == Tile.WALL)</span>
+<span class="fc" id="L114">					continue;</span>
+
+<span class="fc" id="L116">				size++;</span>
+<span class="fc" id="L117">				regions[neighbor.x][neighbor.y][neighbor.z] = region;</span>
+<span class="fc" id="L118">				open.add(neighbor);</span>
+			}
+		}
+<span class="fc" id="L121">		return size;</span>
+	}
+	
+	public WorldBuilder connectRegions(){
+<span class="fc bfc" id="L125" title="All 2 branches covered.">		for (int z = 0; z &lt; depth-1; z++){</span>
+<span class="fc" id="L126">			connectRegionsDown(z);</span>
+		}
+<span class="fc" id="L128">		return this;</span>
+	}
+	
+	private void connectRegionsDown(int z){
+<span class="fc" id="L132">		List&lt;Integer&gt; connected = new ArrayList&lt;Integer&gt;();</span>
+		
+<span class="fc bfc" id="L134" title="All 2 branches covered.">		for (int x = 0; x &lt; width; x++){</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">			for (int y = 0; y &lt; height; y++){</span>
+<span class="fc" id="L136">				int r = regions[x][y][z] * 1000 + regions[x][y][z+1];</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">				if (tiles[x][y][z] == Tile.FLOOR</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">						&amp;&amp; tiles[x][y][z+1] == Tile.FLOOR</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">						&amp;&amp; !connected.contains(r)){</span>
+<span class="fc" id="L140">					connected.add(r);</span>
+<span class="fc" id="L141">					connectRegionsDown(z, regions[x][y][z], regions[x][y][z+1]);</span>
+				}
+			}
+		}
+<span class="fc" id="L145">	}</span>
+	
+	private void connectRegionsDown(int z, int r1, int r2){
+<span class="fc" id="L148">		List&lt;Point&gt; candidates = findRegionOverlaps(z, r1, r2);</span>
+		
+<span class="fc" id="L150">		int stairs = 0;</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">		do{</span>
+<span class="fc" id="L152">			Point p = candidates.remove(0);</span>
+<span class="fc" id="L153">			tiles[p.x][p.y][z] = Tile.STAIRS_DOWN;</span>
+<span class="fc" id="L154">			tiles[p.x][p.y][z+1] = Tile.STAIRS_UP;</span>
+<span class="fc" id="L155">			stairs++;</span>
+		}
+<span class="fc" id="L157">		while (candidates.size() / stairs &gt; 250);</span>
+<span class="fc" id="L158">	}</span>
+
+	public List&lt;Point&gt; findRegionOverlaps(int z, int r1, int r2) {
+<span class="fc" id="L161">		ArrayList&lt;Point&gt; candidates = new ArrayList&lt;Point&gt;();</span>
+		
+<span class="fc bfc" id="L163" title="All 2 branches covered.">		for (int x = 0; x &lt; width; x++){</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">			for (int y = 0; y &lt; height; y++){</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">				if (tiles[x][y][z] == Tile.FLOOR</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">						&amp;&amp; tiles[x][y][z+1] == Tile.FLOOR</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">						&amp;&amp; regions[x][y][z] == r1 </span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">						&amp;&amp; regions[x][y][z+1] == r2){</span>
+<span class="fc" id="L169">					candidates.add(new Point(x,y,z));</span>
+				}
+			}
+		}
+		
+<span class="fc" id="L174">		Collections.shuffle(candidates);</span>
+<span class="fc" id="L175">		return candidates;</span>
+	}
+	
+	private WorldBuilder addExitStairs() {
+<span class="fc" id="L179">		int x = -1;</span>
+<span class="fc" id="L180">		int y = -1;</span>
+		
+		do {
+<span class="fc" id="L183">			x = (int)(Math.random() * width);</span>
+<span class="fc" id="L184">			y = (int)(Math.random() * height);</span>
+		}
+<span class="fc bfc" id="L186" title="All 2 branches covered.">		while (tiles[x][y][0] != Tile.FLOOR);</span>
+		
+<span class="fc" id="L188">		tiles[x][y][0] = Tile.STAIRS_UP;</span>
+<span class="fc" id="L189">		return this;</span>
+	}
+
+	public WorldBuilder makeCaves() {
+<span class="fc" id="L193">		return randomizeTiles()</span>
+<span class="fc" id="L194">				.smooth(8)</span>
+<span class="fc" id="L195">				.createRegions()</span>
+<span class="fc" id="L196">				.connectRegions()</span>
+<span class="fc" id="L197">				.addExitStairs();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

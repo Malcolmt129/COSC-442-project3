@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Item.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">Item.java</span></div><h1>Item.java</h1><pre class="source lang-java linenums">package game;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Item {
+
+	private char glyph;
+<span class="fc" id="L10">	public char glyph() { return glyph; }</span>
+	
+	private Color color;
+<span class="nc" id="L13">	public Color color() { return color; }</span>
+
+	private String name;
+<span class="nc" id="L16">	public String name() { return name; }</span>
+
+	private String appearance;
+<span class="nc" id="L19">	public String appearance() { return appearance; }</span>
+	
+	private int foodValue;
+<span class="nc" id="L22">	public int foodValue() { return foodValue; }</span>
+<span class="nc" id="L23">	public void modifyFoodValue(int amount) { foodValue += amount; }</span>
+
+	private int attackValue;
+<span class="nc" id="L26">	public int attackValue() { return attackValue; }</span>
+<span class="nc" id="L27">	public void modifyAttackValue(int amount) { attackValue += amount; }</span>
+
+	private int defenseValue;
+<span class="nc" id="L30">	public int defenseValue() { return defenseValue; }</span>
+<span class="nc" id="L31">	public void modifyDefenseValue(int amount) { defenseValue += amount; }</span>
+
+	private int thrownAttackValue;
+<span class="nc" id="L34">	public int thrownAttackValue() { return thrownAttackValue; }</span>
+<span class="nc" id="L35">	public void modifyThrownAttackValue(int amount) { thrownAttackValue += amount; }</span>
+
+	private int rangedAttackValue;
+<span class="nc" id="L38">	public int rangedAttackValue() { return rangedAttackValue; }</span>
+<span class="nc" id="L39">	public void modifyRangedAttackValue(int amount) { rangedAttackValue += amount; }</span>
+	
+	private Effect quaffEffect;
+<span class="nc" id="L42">	public Effect quaffEffect() { return quaffEffect; }</span>
+<span class="nc" id="L43">	public void setQuaffEffect(Effect effect) { this.quaffEffect = effect; }</span>
+	
+	private List&lt;Spell&gt; writtenSpells;
+<span class="nc" id="L46">	public List&lt;Spell&gt; writtenSpells() { return writtenSpells; }</span>
+	
+	public void addWrittenSpell(String name, int manaCost, Effect effect){
+<span class="nc" id="L49">		writtenSpells.add(new Spell(name, manaCost, effect));</span>
+<span class="nc" id="L50">	}</span>
+	
+<span class="fc" id="L52">	public Item(char glyph, Color color, String name, String appearance){</span>
+<span class="fc" id="L53">		this.glyph = glyph;</span>
+<span class="fc" id="L54">		this.color = color;</span>
+<span class="fc" id="L55">		this.name = name;</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">		this.appearance = appearance == null ? name : appearance;</span>
+<span class="fc" id="L57">		this.thrownAttackValue = 1;</span>
+<span class="fc" id="L58">		this.writtenSpells = new ArrayList&lt;Spell&gt;();</span>
+<span class="fc" id="L59">	}</span>
+	
+	public String details() {
+<span class="nc" id="L62">		String details = &quot;&quot;;</span>
+		
+<span class="nc bnc" id="L64" title="All 2 branches missed.">		if (attackValue != 0)</span>
+<span class="nc" id="L65">			details += &quot;  attack:&quot; + attackValue;</span>
+
+<span class="nc bnc" id="L67" title="All 2 branches missed.">		if (thrownAttackValue != 1)</span>
+<span class="nc" id="L68">			details += &quot;  thrown:&quot; + thrownAttackValue;</span>
+		
+<span class="nc bnc" id="L70" title="All 2 branches missed.">		if (rangedAttackValue &gt; 0)</span>
+<span class="nc" id="L71">			details += &quot;  ranged:&quot; + rangedAttackValue;</span>
+		
+<span class="nc bnc" id="L73" title="All 2 branches missed.">		if (defenseValue != 0)</span>
+<span class="nc" id="L74">			details += &quot;  defense:&quot; + defenseValue;</span>
+
+<span class="nc bnc" id="L76" title="All 2 branches missed.">		if (foodValue != 0)</span>
+<span class="nc" id="L77">			details += &quot;  food:&quot; + foodValue;</span>
+		
+<span class="nc" id="L79">		return details;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>PathFinder.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">PathFinder.java</span></div><h1>PathFinder.java</h1><pre class="source lang-java linenums">package game;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
+public class PathFinder {
+    private ArrayList&lt;Point&gt; open;
+    private ArrayList&lt;Point&gt; closed;
+    private HashMap&lt;Point, Point&gt; parents;
+	private HashMap&lt;Point,Integer&gt; totalCost;
+    
+<span class="nc" id="L13">    public PathFinder() {</span>
+<span class="nc" id="L14">    	this.open = new ArrayList&lt;Point&gt;();</span>
+<span class="nc" id="L15">        this.closed = new ArrayList&lt;Point&gt;();</span>
+<span class="nc" id="L16">        this.parents = new HashMap&lt;Point, Point&gt;();</span>
+<span class="nc" id="L17">        this.totalCost = new HashMap&lt;Point, Integer&gt;();</span>
+<span class="nc" id="L18">    }</span>
+    
+    private int heuristicCost(Point from, Point to) {
+<span class="nc" id="L21">        return Math.max(Math.abs(from.x - to.x), Math.abs(from.y - to.y));</span>
+    }
+
+    private int costToGetTo(Point from) {
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        return parents.get(from) == null ? 0 : (1 + costToGetTo(parents.get(from)));</span>
+    }
+    
+    private int totalCost(Point from, Point to) {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        if (totalCost.containsKey(from))</span>
+<span class="nc" id="L30">        	return totalCost.get(from);</span>
+        
+<span class="nc" id="L32">        int cost = costToGetTo(from) + heuristicCost(from, to);</span>
+<span class="nc" id="L33">        totalCost.put(from, cost);</span>
+<span class="nc" id="L34">        return cost;</span>
+    }
+
+    private void reParent(Point child, Point parent){
+<span class="nc" id="L38">        parents.put(child, parent);</span>
+<span class="nc" id="L39">        totalCost.remove(child);</span>
+<span class="nc" id="L40">    }</span>
+
+    public ArrayList&lt;Point&gt; findPath(Creature creature, Point start, Point end, int maxTries) {
+<span class="nc" id="L43">        open.clear();</span>
+<span class="nc" id="L44">        closed.clear();</span>
+<span class="nc" id="L45">        parents.clear();</span>
+<span class="nc" id="L46">        totalCost.clear();</span>
+    	
+<span class="nc" id="L48">        open.add(start);</span>
+        
+<span class="nc bnc" id="L50" title="All 4 branches missed.">        for (int tries = 0; tries &lt; maxTries &amp;&amp; open.size() &gt; 0; tries++){</span>
+<span class="nc" id="L51">            Point closest = getClosestPoint(end);</span>
+            
+<span class="nc" id="L53">            open.remove(closest);</span>
+<span class="nc" id="L54">            closed.add(closest);</span>
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">            if (closest.equals(end))</span>
+<span class="nc" id="L57">                return createPath(start, closest);</span>
+            else
+<span class="nc" id="L59">                checkNeighbors(creature, end, closest);</span>
+        }
+<span class="nc" id="L61">        return null;</span>
+    }
+
+	private Point getClosestPoint(Point end) {
+<span class="nc" id="L65">		Point closest = open.get(0);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">		for (Point other : open){</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">		    if (totalCost(other, end) &lt; totalCost(closest, end))</span>
+<span class="nc" id="L68">		        closest = other;</span>
+		}
+<span class="nc" id="L70">		return closest;</span>
+	}
+
+	private void checkNeighbors(Creature creature, Point end, Point closest) {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">		for (Point neighbor : closest.neighbors8()) {</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">		    if (closed.contains(neighbor)</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">		    		|| !creature.canEnter(neighbor.x, neighbor.y, creature.z)</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">		    		&amp;&amp; !neighbor.equals(end))</span>
+<span class="nc" id="L78">		        continue;</span>
+			
+<span class="nc bnc" id="L80" title="All 2 branches missed.">		    if (open.contains(neighbor))</span>
+<span class="nc" id="L81">				reParentNeighborIfNecessary(closest, neighbor);</span>
+		    else
+<span class="nc" id="L83">		        reParentNeighbor(closest, neighbor);</span>
+		}
+<span class="nc" id="L85">	}</span>
+
+	private void reParentNeighbor(Point closest, Point neighbor) {
+<span class="nc" id="L88">		reParent(neighbor, closest);</span>
+<span class="nc" id="L89">		open.add(neighbor);</span>
+<span class="nc" id="L90">	}</span>
+
+	private void reParentNeighborIfNecessary(Point closest, Point neighbor) {
+<span class="nc" id="L93">		Point originalParent = parents.get(neighbor);</span>
+<span class="nc" id="L94">		double currentCost = costToGetTo(neighbor);</span>
+<span class="nc" id="L95">		reParent(neighbor, closest);</span>
+<span class="nc" id="L96">		double reparentCost = costToGetTo(neighbor);</span>
+		
+<span class="nc bnc" id="L98" title="All 2 branches missed.">		if (reparentCost &lt; currentCost)</span>
+<span class="nc" id="L99">			open.remove(neighbor);</span>
+		else
+<span class="nc" id="L101">			reParent(neighbor, originalParent);</span>
+<span class="nc" id="L102">	}</span>
+
+	private ArrayList&lt;Point&gt; createPath(Point start, Point end) {
+<span class="nc" id="L105">		ArrayList&lt;Point&gt; path = new ArrayList&lt;Point&gt;();</span>
+
+<span class="nc bnc" id="L107" title="All 2 branches missed.">		while (!end.equals(start)) {</span>
+<span class="nc" id="L108">		    path.add(end);</span>
+<span class="nc" id="L109">		    end = parents.get(end);</span>
+		}
+
+<span class="nc" id="L112">		Collections.reverse(path);</span>
+<span class="nc" id="L113">		return path;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>

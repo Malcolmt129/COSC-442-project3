@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>CreatureAi.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JoshHack (Mar 17, 2023 6:21:45 PM)</a> &gt; <a href="../../index.html" class="el_group">JoshHack</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">CreatureAi.java</span></div><h1>CreatureAi.java</h1><pre class="source lang-java linenums">package game;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class CreatureAi {
+	protected Creature creature;
+	private Map&lt;String, String&gt; itemNames;
+	
+<span class="fc" id="L11">	public CreatureAi(Creature creature){</span>
+<span class="fc" id="L12">		this.creature = creature;</span>
+<span class="fc" id="L13">		this.creature.setCreatureAi(this);</span>
+<span class="fc" id="L14">		this.itemNames = new HashMap&lt;String, String&gt;();</span>
+<span class="fc" id="L15">	}</span>
+	
+	public String getName(Item item){
+<span class="nc" id="L18">		String name = itemNames.get(item.name());</span>
+		
+<span class="nc bnc" id="L20" title="All 2 branches missed.">		return name == null ? item.appearance() : name;</span>
+	}
+	
+	public void setName(Item item, String name){
+<span class="nc" id="L24">		itemNames.put(item.name(), name);</span>
+<span class="nc" id="L25">	}</span>
+	
+	public void onEnter(int x, int y, int z, Tile tile){
+<span class="nc bnc" id="L28" title="All 2 branches missed.">		if (tile.isGround()){</span>
+<span class="nc" id="L29">			creature.x = x;</span>
+<span class="nc" id="L30">			creature.y = y;</span>
+<span class="nc" id="L31">			creature.z = z;</span>
+<span class="nc" id="L32">		} else {</span>
+<span class="nc" id="L33">			creature.doAction(&quot;bump into a wall&quot;);</span>
+		}
+<span class="nc" id="L35">	}</span>
+	
+	public void onUpdate(){
+<span class="nc" id="L38">	}</span>
+	
+	public void onNotify(String message){
+<span class="fc" id="L41">	}</span>
+
+	public boolean canSee(int wx, int wy, int wz) {
+<span class="nc bnc" id="L44" title="All 2 branches missed.">		if (creature.z != wz)</span>
+<span class="nc" id="L45">			return false;</span>
+		
+<span class="nc bnc" id="L47" title="All 2 branches missed.">		if ((creature.x-wx)*(creature.x-wx) + (creature.y-wy)*(creature.y-wy) &gt; creature.visionRadius()*creature.visionRadius())</span>
+<span class="nc" id="L48">			return false;</span>
+		
+<span class="nc bnc" id="L50" title="All 2 branches missed.">		for (Point p : new Line(creature.x, creature.y, wx, wy)){</span>
+<span class="nc bnc" id="L51" title="All 6 branches missed.">			if (creature.realTile(p.x, p.y, wz).isGround() || p.x == wx &amp;&amp; p.y == wy)</span>
+<span class="nc" id="L52">				continue;</span>
+			
+<span class="nc" id="L54">			return false;</span>
+		}
+		
+<span class="nc" id="L57">		return true;</span>
+	}
+	
+	public void wander(){
+<span class="nc" id="L61">		int mx = (int)(Math.random() * 3) - 1;</span>
+<span class="nc" id="L62">		int my = (int)(Math.random() * 3) - 1;</span>
+		
+<span class="nc" id="L64">		Creature other = creature.creature(creature.x + mx, creature.y + my, creature.z);</span>
+		
+<span class="nc bnc" id="L66" title="All 4 branches missed.">		if (other != null &amp;&amp; other.name().equals(creature.name()) </span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">				|| !creature.tile(creature.x+mx, creature.y+my, creature.z).isGround())</span>
+<span class="nc" id="L68">			return;</span>
+		else
+<span class="nc" id="L70">			creature.moveBy(mx, my, 0);</span>
+<span class="nc" id="L71">	}</span>
+
+	public void onGainLevel() {
+<span class="fc" id="L74">		new LevelUpController().autoLevelUp(creature);</span>
+<span class="fc" id="L75">	}</span>
+
+	public Tile rememberedTile(int wx, int wy, int wz) {
+<span class="nc" id="L78">		return Tile.UNKNOWN;</span>
+	}
+
+	protected boolean canThrowAt(Creature other) {
+<span class="nc bnc" id="L82" title="All 2 branches missed.">		return creature.canSee(other.x, other.y, other.z)</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">			&amp;&amp; getWeaponToThrow() != null;</span>
+	}
+
+	protected Item getWeaponToThrow() {
+<span class="nc" id="L87">		Item toThrow = null;</span>
+		
+<span class="nc bnc" id="L89" title="All 2 branches missed.">		for (Item item : creature.inventory().getItems()){</span>
+<span class="nc bnc" id="L90" title="All 6 branches missed.">			if (item == null || creature.weapon() == item || creature.armor() == item)</span>
+<span class="nc" id="L91">				continue;</span>
+			
+<span class="nc bnc" id="L93" title="All 4 branches missed.">			if (toThrow == null || item.thrownAttackValue() &gt; toThrow.attackValue())</span>
+<span class="nc" id="L94">				toThrow = item;</span>
+		}
+		
+<span class="nc" id="L97">		return toThrow;</span>
+	}
+
+	protected boolean canRangedWeaponAttack(Creature other) {
+<span class="nc bnc" id="L101" title="All 2 branches missed.">		return creature.weapon() != null</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">		    &amp;&amp; creature.weapon().rangedAttackValue() &gt; 0</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">		    &amp;&amp; creature.canSee(other.x, other.y, other.z);</span>
+	}
+
+	protected boolean canPickup() {
+<span class="nc bnc" id="L107" title="All 2 branches missed.">		return creature.item(creature.x, creature.y, creature.z) != null</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">			&amp;&amp; !creature.inventory().isFull();</span>
+	}
+
+	public void hunt(Creature target) {
+<span class="nc" id="L112">		List&lt;Point&gt; points = new Path(creature, target.x, target.y).points();</span>
+		
+<span class="nc" id="L114">		int mx = points.get(0).x - creature.x;</span>
+<span class="nc" id="L115">		int my = points.get(0).y - creature.y;</span>
+		
+<span class="nc" id="L117">		creature.moveBy(mx, my, 0);</span>
+<span class="nc" id="L118">	}</span>
+
+	protected boolean canUseBetterEquipment() {
+<span class="nc bnc" id="L121" title="All 2 branches missed.">		int currentWeaponRating = creature.weapon() == null ? 0 : creature.weapon().attackValue() + creature.weapon().rangedAttackValue();</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">		int currentArmorRating = creature.armor() == null ? 0 : creature.armor().defenseValue();</span>
+		
+<span class="nc bnc" id="L124" title="All 2 branches missed.">		for (Item item : creature.inventory().getItems()){</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">			if (item == null)</span>
+<span class="nc" id="L126">				continue;</span>
+			
+<span class="nc bnc" id="L128" title="All 2 branches missed.">			boolean isArmor = item.attackValue() + item.rangedAttackValue() &lt; item.defenseValue();</span>
+			
+<span class="nc bnc" id="L130" title="All 2 branches missed.">			if (item.attackValue() + item.rangedAttackValue() &gt; currentWeaponRating</span>
+<span class="nc bnc" id="L131" title="All 4 branches missed.">					|| isArmor &amp;&amp; item.defenseValue() &gt; currentArmorRating)</span>
+<span class="nc" id="L132">				return true;</span>
+		}
+		
+<span class="nc" id="L135">		return false;</span>
+	}
+
+	protected void useBetterEquipment() {
+<span class="nc bnc" id="L139" title="All 2 branches missed.">		int currentWeaponRating = creature.weapon() == null ? 0 : creature.weapon().attackValue() + creature.weapon().rangedAttackValue();</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">		int currentArmorRating = creature.armor() == null ? 0 : creature.armor().defenseValue();</span>
+		
+<span class="nc bnc" id="L142" title="All 2 branches missed.">		for (Item item : creature.inventory().getItems()){</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">			if (item == null)</span>
+<span class="nc" id="L144">				continue;</span>
+			
+<span class="nc bnc" id="L146" title="All 2 branches missed.">			boolean isArmor = item.attackValue() + item.rangedAttackValue() &lt; item.defenseValue();</span>
+			
+<span class="nc bnc" id="L148" title="All 2 branches missed.">			if (item.attackValue() + item.rangedAttackValue() &gt; currentWeaponRating</span>
+<span class="nc bnc" id="L149" title="All 4 branches missed.">					|| isArmor &amp;&amp; item.defenseValue() &gt; currentArmorRating) {</span>
+<span class="nc" id="L150">				creature.equip(item);</span>
+			}
+		}
+<span class="nc" id="L153">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>JoshHack (Mar 17, 2023 6:21:45 PM)</div></body></html>
